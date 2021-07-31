@@ -22,8 +22,10 @@ addLayer("p", {
         mult = mult.mul(hasUpgrade("a",12)?upgradeEffect("a", 12):1)
         mult = mult.mul(buyableEffect("p",12))
         mult = mult.pow(hasUpgrade("p",22)?1.1:1)
-        mult = mult.mul(player.t.shards.add(1).pow(hasUpgrade("t",13)?1.5:0.5))
+        mult = mult.mul(inChallenge("t",21) ? new Decimal(1) : player.t.shards.add(1).pow(new Decimal(0.5).mul(hasUpgrade("t",13)?3:1).mul(hasUpgrade("p",33)?2:1)).mul(hasChallenge("t",21)?1e8:1))
         mult = mult.mul(hasUpgrade("t",11)?1e6:1)
+        mult = mult.pow(inChallenge("t",31)?0.1:1)
+        mult = mult.pow(hasChallenge("t",31)?1.05:1)
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -92,7 +94,7 @@ addLayer("p", {
         description: "Gain more points based on points.",
         cost: new Decimal(1e275),
         unlocked(){return hasUpgrade("a",22) || hasUpgrade("p",21)},
-        effect(){return player.points.pow(0.05).add(1)},
+        effect(){return hasUpgrade("p",35) ? player.points.pow(0.055).add(1) : player.points.pow(0.05).add(1)},
         effectDisplay(){return `x${format(this.effect())}`}
       },
       22: {
@@ -118,6 +120,38 @@ addLayer("p", {
         description: "Unlock a new buyable for shards.",
         cost: new Decimal("6.666e666"),
         unlocked(){return hasUpgrade("t",15) || hasUpgrade("p",25)},
+      },
+      31: {
+        title: "Transcension Point Cloning",
+        description: "Gain 1e10x more transcension points.",
+        cost: new Decimal("1e6280"),
+        unlocked(){return hasChallenge("t",12) || hasUpgrade("p",31)},
+      },
+      32: {
+        title: "Transcendental Shards",
+        description: "Shards boost transcension point gain at a reduced rate.",
+        cost: new Decimal("1e6810"),
+        unlocked(){return hasChallenge("t",12) || hasUpgrade("p",32)},
+        effect(){return player.t.shards.pow(0.25).add(1).gte("1e30") ? new Decimal(1e30) : player.t.shards.pow(0.25).add(1)},
+        effectDisplay(){return `x${format(this.effect())}`}
+      },
+      33: {
+        title: "Shard Refinery II",
+        description: "The multiplier from shards is squared.",
+        cost: new Decimal("1e7300"),
+        unlocked(){return hasChallenge("t",12) || hasUpgrade("p",33)},
+      },
+      34: {
+        title: "Short & Simple II",
+        description: "Multiply ascension point gain by 1e100.",
+        cost: new Decimal("1e21370"),
+        unlocked(){return hasChallenge("t",12) || hasUpgrade("p",34)},
+      },
+      35: {
+        title: "Self-Synergy Enhancement",
+        description: "<b>Self-Synergy</b> uses a better formula.",
+        cost: new Decimal("1e72600"),
+        unlocked(){return hasChallenge("t",12) || hasUpgrade("p",35)},
       },
     },
     buyables: {
@@ -151,6 +185,21 @@ addLayer("p", {
           return mult2
         },
     },
+    13: {
+        title: "Ascension Point Doubler",
+        cost(x) { return new Decimal("1e20000").mul(new Decimal(1e20).pow(x)) },
+        display() {return `Double ascension point gain every time you buy this!\nTimes Bought: ${format(getBuyableAmount(this.layer, this.id))}\nCost: ${format(this.cost())}\nEffect: ${format(this.effect())}x ascension points`},
+        canAfford() {return player.p.points.gte(this.cost())},
+        buy() {
+            player.p.points = player.p.points.sub(this.cost())
+            setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+        },
+        unlocked(){return hasChallenge("t",22)},
+        effect(x) {
+          mult2 = new Decimal(x).gte(2500) ? new Decimal(2).pow(2500).mul(new Decimal(1.25).pow(new Decimal(x).sub(2500))) : new Decimal(2).pow(x)
+          return mult2
+        },
+    },
 }
 })
 addLayer("a", {
@@ -176,8 +225,11 @@ addLayer("a", {
         mult = mult.mul(hasUpgrade("a",13)?upgradeEffect("a", 13):1)
         mult = mult.mul(hasUpgrade("a",23)?1000:1)
         mult = mult.mul(hasUpgrade("t",12)?upgradeEffect("t",12):1)
-        mult = mult.mul(hasUpgrade("t",14)?player.t.shards.add(1).pow(hasUpgrade("t",13)?1.5:0.5):1)
+        mult = mult.mul(hasUpgrade("t",14)?(inChallenge("t",21) ? new Decimal(1) : player.t.shards.add(1).pow(new Decimal(0.5).mul(hasUpgrade("t",13)?3:1).mul(hasUpgrade("p",33)?2:1)).mul(hasChallenge("t",21)?1e8:1)):1)
         mult = mult.mul(hasUpgrade("t",21)?1e15:1)
+        mult = mult.mul(hasChallenge("t",11)?1e50:1)
+        mult = mult.mul(hasUpgrade("p",34)?1e100:1)
+        mult = mult.mul(buyableEffect("p",13))
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -187,6 +239,12 @@ addLayer("a", {
     hotkeys: [
         {key: "a", description: "A: Reset for ascension points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
+    automate(){
+      if (player.a.auto) {
+        addBuyables("a",11,player.a.points.dividedBy(1e300).times(new Decimal(1e20).pow(inChallenge("t",22)?5:1)).dividedBy((new Decimal(1e20).pow(inChallenge("t",22)?5:1)).pow(getBuyableAmount("a",11).plus(1))).plus(1).log(new Decimal(1e20).pow(inChallenge("t",22)?5:1)).floor())
+        if(hasChallenge("t",22)){addBuyables("p",13,player.p.points.dividedBy("1e20000").times(1e20).dividedBy(new Decimal(1e20).pow(getBuyableAmount("p",13).plus(1))).plus(1).log(1e20).floor())}
+      }
+    },
     branches: ["p"],
     layerShown(){return player.p.total.gte(1000) || player.a.total.gte(1) || player.t.total.gte(1)},
     doReset(layer){
@@ -211,7 +269,7 @@ addLayer("a", {
         description: "Gain more prestige points based on total ascension points.",
         cost: new Decimal(2),
         unlocked(){return hasUpgrade("a",11) || hasUpgrade("a",12) || player.t.total.gte(1)},
-        effect(){return player.a.total.pow(hasUpgrade("a",15)?0.6:0.5).add(1).gte(1e120) ? (hasUpgrade("p",23) ? new Decimal(1e200).pow(hasUpgrade("a",15)?0.6:0.5).add(1).mul(player.a.total.pow(0.1).add(1)) : new Decimal(1e120)) : player.a.total.pow(hasUpgrade("a",15)?0.6:0.5).add(1)},
+        effect(){return inChallenge("t",11) ? new Decimal(1) : player.a.total.pow(hasUpgrade("a",15)?0.6:0.5).add(1).gte(1e120) ? (hasUpgrade("p",23) ? new Decimal(1e200).pow(hasUpgrade("a",15)?0.6:0.5).add(1).mul(player.a.total.pow(hasUpgrade("t",22)?0.25:0.1).add(1)) : new Decimal(1e120)) : player.a.total.pow(hasUpgrade("a",15)?0.6:0.5).add(1)},
         effectDisplay(){return `x${format(this.effect())}`}
       },
       13: {
@@ -270,7 +328,7 @@ addLayer("a", {
     buyables: {
       11: {
         title: "Point Booster",
-        cost(x) {return new Decimal(1e20).pow(x).times(1e300)},//x is the amount of buyables you have
+        cost(x) {return new Decimal(1e20).pow(new Decimal(x).mul(inChallenge("t",22)?5:1)).times(1e300)},//x is the amount of buyables you have
         canAfford() { return player.a.points.gte(this.cost())},
         buy() {
            player.a.points = player.a.points.sub(this.cost())
@@ -279,7 +337,7 @@ addLayer("a", {
         display() {return `Multiply point gain by 1e10 every time you buy this!\nTimes Bought: ${format(getBuyableAmount(this.layer, this.id))}\nCost: ${format(this.cost())}\nEffect: ${format(this.effect())}x point gain`},
         unlocked(){return hasUpgrade("a",25)},
         effect(x) { 
-          mult2 = new Decimal(1e10).pow(x)
+          mult2 = new Decimal(x).gte(3000) ? new Decimal(1e10).pow(3000).mul(new Decimal(5e4).pow(new Decimal(x).sub(3000))) : new Decimal(1e10).pow(x)
           return new Decimal(mult2)} //x is the amount of buyables you have
       } 
   },
@@ -320,15 +378,16 @@ addLayer("t", {
     startData() { return {
         unlocked: true,
 		points: new Decimal(0),
-    shards: new Decimal(0), 
+    shards: new Decimal(0),
     }},
     tabFormat: [
     "main-display",
     "prestige-button",
-    ["display-text", () => `You have ${format(player.t.shards)} shards, multiplying ${hasUpgrade("t",14)?`point, prestige point, and ascension point`:`point and prestige point`} gain by ${format(player.t.shards.add(1).pow(hasUpgrade("t",13)?1.5:0.5))}x`],
+    ["display-text", () => `You have ${format(player.t.shards)} shards, multiplying ${hasUpgrade("t",14)?`point, prestige point, and ascension point`:`point and prestige point`} gain by ${format(inChallenge("t",21) ? new Decimal(1) : player.t.shards.add(1).pow(new Decimal(0.5).mul(hasUpgrade("t",13)?3:1).mul(hasUpgrade("p",33)?2:1)).mul(hasChallenge("t",21)?1e8:1))}x`],
     "milestones",
     "buyables",
     "upgrades",
+    "challenges",
     ],
     color: "#9803FC",
     requires: new Decimal(1e280), // Can be a function that takes requirement increases into account
@@ -341,6 +400,9 @@ addLayer("t", {
         mult = new Decimal(1)
         mult = mult.mul(hasUpgrade("p",24)?3:1)
         mult = mult.mul(hasUpgrade("a",24)?upgradeEffect("a",24):1)
+        mult = mult.mul(hasUpgrade("p",31)?1e10:1)
+        mult = mult.mul(hasUpgrade("p",32)?upgradeEffect("p",32):1)
+        mult = mult.pow(hasUpgrade("t",25)?1.2:1)
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -357,39 +419,63 @@ addLayer("t", {
         title: "Transcendental Power",
         description: "Multiply prestige point gain by 1,000,000.",
         cost: new Decimal(1),
-        unlocked(){return player.t.total.gte(2)},
+        unlocked(){return player.t.total.gte(2) || hasUpgrade("t",11)},
       },
       12: {
         title: "Transcension Bonus",
         description: "Gain more ascension points based on total transcension points.",
         cost: new Decimal(1),
-        unlocked(){return player.t.total.gte(2)},
-        effect(){return player.t.total.pow(0.9).add(1)},
+        unlocked(){return player.t.total.gte(2) || hasUpgrade("t",12)},
+        effect(){return player.t.total.pow(hasUpgrade("t",24)?1.1:0.9).add(1)},
         effectDisplay(){return `x${format(this.effect())}`}
       },
       13: {
         title: "Shard Refinery",
         description: "The multiplier from shards is cubed.",
         cost: new Decimal(5),
-        unlocked(){return player.t.total.gte(8)},
+        unlocked(){return player.t.total.gte(8) || hasUpgrade("t",13)},
       },
       14: {
         title: "Divine Shards",
         description: "Shards now multiply ascension point gain.",
         cost: new Decimal(10),
-        unlocked(){return player.t.total.gte(8)},
+        unlocked(){return player.t.total.gte(8) || hasUpgrade("t",14)},
       },
       15: {
         title: "Upgrade Unlock II",
         description: "Unlock 2 new prestige upgrades and 2 new ascension upgrades.",
         cost: new Decimal(50),
-        unlocked(){return hasUpgrade("t",14)},
+        unlocked(){return hasUpgrade("t",14) || hasUpgrade("t",15)},
       },
       21: {
         title: "Yet Another Multiplier",
         description: "Multiply ascension point gain by 1e15.",
         cost: new Decimal(2000),
-        unlocked(){return hasUpgrade("p",25)},
+        unlocked(){return hasUpgrade("p",25) || hasUpgrade("t",21)},
+      },
+      22: {
+        title: "Inflation",
+        description: "Weaken the softcap for <b>Ascension Bonus</b>.",
+        cost: new Decimal(10000),
+        unlocked(){return hasUpgrade("t",21) || hasUpgrade("t",22)},
+      },
+      23: {
+        title: "A New Mechanic",
+        description: "Unlock Challenges!",
+        cost: new Decimal(1.5e10),
+        unlocked(){return hasUpgrade("t",22) || hasUpgrade("t",23)},
+      },
+      24: {
+        title: "Transcension Bonus Enhancement",
+        description: "<b>Transcension Bonus</b> uses a better formula.",
+        cost: new Decimal("1e946"),
+        unlocked(){return hasChallenge("t",32) || hasUpgrade("t",24)},
+      },
+      25: {
+        title: "Hyper Transcension",
+        description: "Transcension points ^1.2.",
+        cost: new Decimal("1e956"),
+        unlocked(){return hasChallenge("t",32) || hasUpgrade("t",25)},
       },
     },
     buyables: {
@@ -403,7 +489,7 @@ addLayer("t", {
         },
         display() {return `Generate shards using this shard generator! Generate more shards with more generator levels.\nLevel: ${format(getBuyableAmount(this.layer, this.id))}\nCost: ${format(this.cost())}\nEffect: +${format(this.effect())} shards/sec`},
         effect(x) { 
-          mult2 = new Decimal(x).mul(buyableEffect("t",12))
+          mult2 = new Decimal(x).mul(buyableEffect("t",12)).mul(hasChallenge("t",21)?1e8:1)
           return new Decimal(mult2)}
       },
       12: {
@@ -417,7 +503,7 @@ addLayer("t", {
         display() {return `Double shard gain every time you buy this!\nTimes bought: ${format(getBuyableAmount(this.layer, this.id))}\nCost: ${format(this.cost())}\nEffect: ${format(this.effect())}x shards`},
         unlocked(){return hasUpgrade("p",25)},
         effect(x) { 
-          mult2 = new Decimal(2).pow(x)
+          mult2 = new Decimal(x).gte(200) ? new Decimal(2).pow(200).mul(new Decimal(1.25).pow(new Decimal(x).sub(200))) : new Decimal(2).pow(x)
           return new Decimal(mult2)}
       },
     },
@@ -446,6 +532,65 @@ addLayer("t", {
         requirementDescription: "12 total transcension points",
         effectDescription: "Buy max buyables.",
         done() { return player.t.total.gte(12) },
+    },
+    5: {
+        requirementDescription: "1e45 transcension points",
+        effectDescription: "Automate the ascension buyable and all future prestige buyables.",
+        done() { return player.t.points.gte(1e45) },
+        unlocked(){return hasChallenge("t",12) || hasMilestone("t",5)},
+        toggles: [
+          ["a","auto"]
+        ]
+    },
+  },
+    challenges: {
+    11: {
+        name: "Impotence",
+        challengeDescription: "The multiplier from <b>Ascension Bonus</b> is 1x.",
+        goalDescription: "Reach 1e220 points.",
+        rewardDescription: "Gain 1e50x more ascension points.",
+        canComplete: function() {return player.points.gte("1e220")},
+        unlocked(){return hasUpgrade("t",23)}
+    },
+    12: {
+        name: "Time Dilation",
+        challengeDescription: "Points are ^0.75.",
+        goalDescription: "Reach 1e660 points.",
+        rewardDescription: "Points ^1.05, and unlock 5 new prestige upgrades.",
+        canComplete: function() {return player.points.gte("1e660")},
+        unlocked(){return hasUpgrade("t",23)}
+    },
+    21: {
+        name: "No Shards",
+        challengeDescription: "Shards are useless.",
+        goalDescription: "Reach 1e9000 points.",
+        rewardDescription: "Gain 100,000,000x more shards.",
+        canComplete: function() {return player.points.gte("1e9000")},
+        unlocked(){return hasUpgrade("t",23)}
+    },
+    22: {
+        name: "Higher Costs",
+        challengeDescription: "The ascension buyable scales significantly faster.",
+        goalDescription: "Reach 1e7280 points.",
+        rewardDescription: "Unlock the 3rd prestige buyable.",
+        canComplete: function() {return player.points.gte("1e7280")},
+        unlocked(){return hasUpgrade("t",23)}
+    },
+    31: {
+        name: "Anti-Prestigious",
+        challengeDescription: "Prestige points are ^0.1.",
+        goalDescription: "Reach 1e2880 points.",
+        rewardDescription: "Prestige points ^1.05.",
+        canComplete: function() {return player.points.gte("1e2880")},
+        unlocked(){return hasUpgrade("t",23)}
+    },
+    32: {
+        name: "Financial Recession",
+        challengeDescription: "Points are ^0.01.",
+        goalDescription: "Reach 2.00e37 points.",
+        rewardDescription: "Unlock 2 new transcension upgrades.",
+        canComplete: function() {return player.points.gte("2e37")},
+        unlocked(){return hasUpgrade("t",23)}
     },
   },
     update(diff) {

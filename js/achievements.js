@@ -1,7 +1,7 @@
 addLayer("g", {
     name: "goals", // This is optional, only used in a few places, If absent it just uses the layer id.
     symbol: "G", // This appears on the layer's node. Default is the id with the first letter capitalized
-    color: "#FFFF00",
+    color: "#FFAA00",
     position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
     startData() { return {
         unlocked: true,
@@ -87,9 +87,34 @@ tabFormat: [
       tooltip:"Reach 2000 transcension points."
     },
     35: {
-        name: "The Endgame",
+        name: "Point Galaxy",
       done(){return player.points.gte("1e900")},
       tooltip:"Reach 1e900 points."
-    }
+    },
+    41: {
+        name: "The Next Era",
+      done(){return hasUpgrade("t",23)},
+      tooltip:"Unlock Challenges."
+    },
+    42: {
+        name: "Point Singularity",
+      done(){return player.points.gte("1e10000")},
+      tooltip:"Reach 1e10,000 points."
+    },
+    43: {
+        name: "Welcome To The Infinite",
+      done(){return player.t.points.gte("1.797e308")},
+      tooltip:"Reach 1.797e308 transcension points."
+    },
+    44: {
+        name: "Extreme Gains",
+      done(){return player.points.gte("1e100000")},
+      tooltip:"Reach 1e100,000 points."
+    },
+    45: {
+        name: "Engineer Gaming",
+      done(){return hasUpgrade("t",25)},
+      tooltip:"Buy 35 upgrades in total."
+    },
 },
 })

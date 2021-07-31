@@ -13,8 +13,8 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.1.1",
-	name: "Base Game",
+	num: "0.2",
+	name: "The Challenging Update",
 }
 
 let changelog = `subscribe and follow balls hd`
@@ -46,8 +46,11 @@ function getPointGen() {
   gain = gain.mul(hasUpgrade("a",11)?10:1)
   gain = gain.mul(hasUpgrade("p",15)?1e10:1)
   gain = gain.mul(hasUpgrade("p",21)?upgradeEffect("p",21):1)
-  gain = gain.mul(player.t.shards.add(1).pow(hasUpgrade("t",13)?1.5:0.5))
+  gain = gain.mul(inChallenge("t",21) ? new Decimal(1) : player.t.shards.add(1).pow(new Decimal(0.5).mul(hasUpgrade("t",13)?3:1).mul(hasUpgrade("p",33)?2:1)).mul(hasChallenge("t",21)?1e8:1))
   gain = gain.mul(buyableEffect("a", 11))
+  gain = gain.pow(inChallenge("t",12)?0.75:1)
+  gain = gain.pow(hasChallenge("t",12)?1.05:1)
+  gain = gain.pow(inChallenge("t",32)?0.01:1)
 	return gain
 }
 
@@ -61,7 +64,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte(new Decimal("e900"))
+	return player.points.gte(new Decimal("1e184000"))
 }
 
 
