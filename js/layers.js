@@ -65,19 +65,19 @@ addLayer("p", {
         title: "Buyable Unlock",
         description: "Unlock a buyable.",
         cost: new Decimal(10),
-        unlocked(){return hasUpgrade("p",11)}
+        unlocked(){return hasUpgrade("p",11) || hasUpgrade("p",12) || player.a.total.gte(1) || player.t.total.gte(1)}
       },
       13: {
         title: "Prestige Enhancement",
         description: "Triple prestige point gain.",
         cost: new Decimal(25),
-        unlocked(){return hasUpgrade("p",11)}
+        unlocked(){return hasUpgrade("p",11) || hasUpgrade("p",13) || player.a.total.gte(1) || player.t.total.gte(1)}
       },
       14: {
         title: "Prestige Bonus",
         description: "Gain more points based on total prestige points.",
         cost: new Decimal(200),
-        unlocked(){return hasUpgrade("p",13)},
+        unlocked(){return hasUpgrade("p",13) || hasUpgrade("p",14) || player.a.total.gte(1) || player.t.total.gte(1)},
         effect(){return player.p.total.pow(hasUpgrade("a",14)?0.75:0.5).add(1)},
         effectDisplay(){return `x${format(this.effect())}`}
       },
@@ -85,13 +85,13 @@ addLayer("p", {
         title: "Short & Simple",
         description: "Multiply point gain by 1e10.",
         cost: new Decimal(1e220),
-        unlocked(){return hasUpgrade("a",22)}
+        unlocked(){return hasUpgrade("a",22) || hasUpgrade("p",15)}
       },
       21: {
         title: "Self-Synergy",
         description: "Gain more points based on points.",
         cost: new Decimal(1e275),
-        unlocked(){return hasUpgrade("a",22)},
+        unlocked(){return hasUpgrade("a",22) || hasUpgrade("p",21)},
         effect(){return player.points.pow(0.05).add(1)},
         effectDisplay(){return `x${format(this.effect())}`}
       },
@@ -99,25 +99,25 @@ addLayer("p", {
         title: "Prestige Exponential",
         description: "Prestige points ^1.1.",
         cost: new Decimal("1e420"),
-        unlocked(){return hasUpgrade("a",22)},
+        unlocked(){return hasUpgrade("a",22) || hasUpgrade("p",22)},
       },
       23: {
         title: "Hardcap Repellent",
         description: "Remove the hardcap for <b>Ascension Bonus</b>, but the formula for that upgrade is (softcapped).",
         cost: new Decimal("1e465"),
-        unlocked(){return hasUpgrade("a",22)},
+        unlocked(){return hasUpgrade("a",22) || hasUpgrade("p",23)},
       },
       24: {
         title: "Transcendental Tripler",
         description: "Gain 3x more transcension points.",
         cost: new Decimal("1e610"),
-        unlocked(){return hasUpgrade("t",15)},
+        unlocked(){return hasUpgrade("t",15) || hasUpgrade("p",24)},
       },
       25: {
         title: "New Shard Buyable",
         description: "Unlock a new buyable for shards.",
         cost: new Decimal("6.666e666"),
-        unlocked(){return hasUpgrade("t",15)},
+        unlocked(){return hasUpgrade("t",15) || hasUpgrade("p",25)},
       },
     },
     buyables: {
@@ -210,7 +210,7 @@ addLayer("a", {
         title: "Ascension Bonus",
         description: "Gain more prestige points based on total ascension points.",
         cost: new Decimal(2),
-        unlocked(){return hasUpgrade("a",11)},
+        unlocked(){return hasUpgrade("a",11) || hasUpgrade("a",12) || player.t.total.gte(1)},
         effect(){return player.a.total.pow(hasUpgrade("a",15)?0.6:0.5).add(1).gte(1e120) ? (hasUpgrade("p",23) ? new Decimal(1e200).pow(hasUpgrade("a",15)?0.6:0.5).add(1).mul(player.a.total.pow(0.1).add(1)) : new Decimal(1e120)) : player.a.total.pow(hasUpgrade("a",15)?0.6:0.5).add(1)},
         effectDisplay(){return `x${format(this.effect())}`}
       },
@@ -218,7 +218,7 @@ addLayer("a", {
         title: "Ascended Points",
         description: "Gain more ascension points based on points. (hardcaps at 25x)",
         cost: new Decimal(50),
-        unlocked(){return hasUpgrade("a",11)},
+        unlocked(){return hasUpgrade("a",11) || hasUpgrade("a",13) || player.t.total.gte(1)},
         effect(){return new Decimal(player.points).gte(1e24) ? new Decimal(25) : player.points.add(1).log10().add(1)},
         effectDisplay(){return `x${format(this.effect())}`}
       },
@@ -226,37 +226,37 @@ addLayer("a", {
         title: "Prestige Bonus Enhancement",
         description: "<b>Prestige Bonus</b> uses a better formula.",
         cost: new Decimal(1000),
-        unlocked(){return hasMilestone("a",1)},
+        unlocked(){return hasMilestone("a",1) || hasUpgrade("a",14) || player.t.total.gte(1)},
       },
       15: {
         title: "Ascension Bonus Enhancement",
         description: "<b>Ascension Bonus</b> uses a better formula.",
         cost: new Decimal(2e10),
-        unlocked(){return hasMilestone("a",2)},
+        unlocked(){return hasMilestone("a",2) || hasUpgrade("a",15) || player.t.total.gte(1)},
       },
       21: {
         title: "Buyable Unlock II",
         description: "Unlock a second buyable.",
         cost: new Decimal(5e11),
-        unlocked(){return hasUpgrade("a",15)},
+        unlocked(){return hasUpgrade("a",15) || hasUpgrade("a",21) || player.t.total.gte(1)},
       },
       22: {
         title: "Upgrade Unlock",
         description: "Unlock some new prestige upgrades.",
         cost: new Decimal(1e100),
-        unlocked(){return hasUpgrade("a",15)},
+        unlocked(){return hasUpgrade("a",15) || hasUpgrade("a",22) || player.t.total.gte(1)},
       },
       23: {
         title: "Small Ascension Multiplier",
         description: "Multiply ascension point gain by 1000.",
         cost: new Decimal(1e275),
-        unlocked(){return hasUpgrade("a",15)},
+        unlocked(){return hasUpgrade("a",15) || hasUpgrade("a",23) || player.t.total.gte(1)},
       },
       24: {
         title: "Transcended Points",
         description: "Gain more transcension points based on points.",
         cost: new Decimal("1e320"),
-        unlocked(){return hasUpgrade("t",15)},
+        unlocked(){return hasUpgrade("t",15) || hasUpgrade("a",24)},
         effect(){return player.points.add(1).log10().add(1).cbrt()},
         effectDisplay(){return `x${format(this.effect())}`}
       },
@@ -264,7 +264,7 @@ addLayer("a", {
         title: "Buyable Unlock III",
         description: "Unlock a buyable for Ascension.",
         cost: new Decimal("1e320"),
-        unlocked(){return hasUpgrade("t",15)},
+        unlocked(){return hasUpgrade("t",15) || hasUpgrade("a",25)},
       },
     },
     buyables: {
@@ -306,7 +306,7 @@ addLayer("a", {
         requirementDescription: "1e100 ascension points",
         effectDescription: "Automate the 2nd prestige buyable.",
         done() { return player.a.points.gte(1e100) },
-        unlocked() { return hasUpgrade("a",21) },
+        unlocked() { return hasUpgrade("a",21) || hasMilestone("a",3) || player.t.total(1) },
         toggles: [
           ["p","auto2"]
         ]
@@ -445,7 +445,7 @@ addLayer("t", {
     4: {
         requirementDescription: "12 total transcension points",
         effectDescription: "Buy max buyables.",
-        done() { return player.t.total.gte(8) },
+        done() { return player.t.total.gte(12) },
     },
   },
     update(diff) {
