@@ -7,8 +7,8 @@ addLayer("g", {
         unlocked: true,
 		points: new Decimal(0),
     }},
-    tooltip:"Achievements",
-    resource: "achievements", // Name of prestige currency
+    tooltip:"Goals",
+    resource: "goals", // Name of prestige currency
     type: "none", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     row: "side", // Row the layer is in on the tree (0 is the first row)
 tabFormat: [
