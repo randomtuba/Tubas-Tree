@@ -7,7 +7,7 @@ let modInfo = {
 
 	discordName: "randomtuba's Discord Server",
 	discordLink: "https://discord.gg/VxHzjtgdA4",
-	initialStartPoints: new Decimal (10), // Used for hard resets and new players
+	initialStartPoints: new Decimal (0), // Used for hard resets and new players
 	offlineLimit: 1,  // In hours
 }
 
