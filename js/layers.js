@@ -112,7 +112,7 @@ addLayer("p", {
       24: {
         title: "Transcendental Tripler",
         description: "Gain 3x more transcension points.",
-        cost: new Decimal("1e610"),
+        cost: new Decimal("1e600"),
         unlocked(){return hasUpgrade("t",15) || hasUpgrade("p",24)},
       },
       25: {
@@ -124,7 +124,7 @@ addLayer("p", {
       31: {
         title: "Transcension Point Cloning",
         description: "Gain 1e10x more transcension points.",
-        cost: new Decimal("1e6280"),
+        cost: new Decimal("1e6150"),
         unlocked(){return hasChallenge("t",12) || hasUpgrade("p",31)},
       },
       32: {
@@ -313,7 +313,7 @@ addLayer("a", {
       24: {
         title: "Transcended Points",
         description: "Gain more transcension points based on points.",
-        cost: new Decimal("1e320"),
+        cost: new Decimal("1e315"),
         unlocked(){return hasUpgrade("t",15) || hasUpgrade("a",24)},
         effect(){return player.points.add(1).log10().add(1).cbrt()},
         effectDisplay(){return `x${format(this.effect())}`}
@@ -321,7 +321,7 @@ addLayer("a", {
       25: {
         title: "Buyable Unlock III",
         description: "Unlock a buyable for Ascension.",
-        cost: new Decimal("1e320"),
+        cost: new Decimal("1e315"),
         unlocked(){return hasUpgrade("t",15) || hasUpgrade("a",25)},
       },
     },
@@ -444,7 +444,7 @@ addLayer("t", {
       15: {
         title: "Upgrade Unlock II",
         description: "Unlock 2 new prestige upgrades and 2 new ascension upgrades.",
-        cost: new Decimal(50),
+        cost: new Decimal(30),
         unlocked(){return hasUpgrade("t",14) || hasUpgrade("t",15)},
       },
       21: {
@@ -534,9 +534,9 @@ addLayer("t", {
         done() { return player.t.total.gte(12) },
     },
     5: {
-        requirementDescription: "1e45 transcension points",
+        requirementDescription: "1e40 transcension points",
         effectDescription: "Automate the ascension buyable and all future prestige buyables.",
-        done() { return player.t.points.gte(1e45) },
+        done() { return player.t.points.gte(1e40) },
         unlocked(){return hasChallenge("t",12) || hasMilestone("t",5)},
         toggles: [
           ["a","auto"]
@@ -547,9 +547,9 @@ addLayer("t", {
     11: {
         name: "Impotence",
         challengeDescription: "The multiplier from <b>Ascension Bonus</b> is 1x.",
-        goalDescription: "Reach 1e220 points.",
+        goalDescription: "Reach 1e215 points.",
         rewardDescription: "Gain 1e50x more ascension points.",
-        canComplete: function() {return player.points.gte("1e220")},
+        canComplete: function() {return player.points.gte("1e215")},
         unlocked(){return hasUpgrade("t",23)}
     },
     12: {
@@ -579,9 +579,9 @@ addLayer("t", {
     31: {
         name: "Anti-Prestigious",
         challengeDescription: "Prestige points are ^0.1.",
-        goalDescription: "Reach 1e2880 points.",
+        goalDescription: "Reach 1e2870 points.",
         rewardDescription: "Prestige points ^1.05.",
-        canComplete: function() {return player.points.gte("1e2880")},
+        canComplete: function() {return player.points.gte("1e2870")},
         unlocked(){return hasUpgrade("t",23)}
     },
     32: {
