@@ -69,7 +69,7 @@ tabFormat: [
     31: {
         name: "TRANSCENDED",
       done(){return hasMilestone("t",4)},
-      tooltip:"Obtain all of the Transcension Milestones."
+      tooltip:"Obtain 5 Transcension Milestones."
     },
     32: {
         name: "True Divinity",
@@ -115,6 +115,31 @@ tabFormat: [
         name: "Engineer Gaming",
       done(){return hasUpgrade("t",25)},
       tooltip:"Buy 35 upgrades in total."
+    },
+    51: {
+        name: "Shard Planet",
+      done(){return player.t.shards.gte(1e200)},
+      tooltip:"Reach 1e200 shards."
+    },
+    52: {
+        name: "The Almighty",
+      done(){return player.t.points.gte("1e1000")},
+      tooltip:"Reach 1e1000 transcension points."
+    },
+    53: {
+        name: "Point Universe",
+      done(){return player.points.gte("1e200000")},
+      tooltip:"Reach 1e200,000 points."
+    },
+    54: {
+        name: "oh no",
+      done(){return hasUpgrade("a",35)},
+      tooltip:"Buy <b>Inflation II</b>."
+    },
+    55: {
+        name: "Anti-Challenged",
+      done(){return hasChallenge("t",42)},
+      tooltip:"Complete all 8 challenges."
     },
 },
 })
