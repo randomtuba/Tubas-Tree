@@ -22,10 +22,11 @@ addLayer("p", {
         mult = mult.mul(hasUpgrade("a",12)?upgradeEffect("a", 12):1)
         mult = mult.mul(buyableEffect("p",12))
         mult = mult.pow(hasUpgrade("p",22)?1.1:1)
-        mult = mult.mul(inChallenge("t",21) || inChallenge("t",41) ? new Decimal(1) : player.t.shards.add(1).pow(new Decimal(0.5).mul(hasUpgrade("t",13)?3:1).mul(hasUpgrade("p",33)?2:1)).mul(hasChallenge("t",21)?1e8:1))
+        mult = mult.mul(inChallenge("t",21) || inChallenge("t",41) || inChallenge("t",52) ? new Decimal(1) : player.t.shards.add(1).pow(new Decimal(0.5).mul(hasUpgrade("t",13)?3:1).mul(hasUpgrade("p",33)?2:1)).mul(hasChallenge("t",21)?1e8:1))
         mult = mult.mul(hasUpgrade("t",11)?1e6:1)
-        mult = mult.pow(inChallenge("t",31)?0.1:1)
+        mult = mult.pow(inChallenge("t",31) || inChallenge("t",52)?0.1:1)
         mult = mult.pow(hasChallenge("t",31)?1.05:1)
+        mult = mult.mul(inChallenge("t",51) || inChallenge("t",52) ? new Decimal(1) : player.r.quarkEnergy.add(1).pow(new Decimal(2.5).add(hasUpgrade("r",14)?player.r.total.log10().div(10):0)))
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -36,11 +37,12 @@ addLayer("p", {
         {key: "p", description: "P: Reset for prestige points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
     automate(){
+      if (player.p.points.lte(0)) return
       if (player.p.auto) {
         hasMilestone("t",4) ? addBuyables("p",11,player.p.points.dividedBy(10).times(9).dividedBy(getBuyableAmount("p",11).plus(1).pow10()).plus(1).log(100).floor()) : buyBuyable("p",11)
       }
       if (player.p.auto2) {
-        hasMilestone("t",4) ? addBuyables("p",12,player.p.points.dividedBy(1e10).times(99).dividedBy(new Decimal(100).pow(getBuyableAmount("p",12).plus(1))).plus(1).log10().floor()) : buyBuyable("p",12)
+        hasMilestone("t",4) ? setBuyableAmount("p", 12, player.p.points.dividedBy(1e10).log(100).floor()) : buyBuyable("p",12)
       }
     },
     layerShown(){return true},
@@ -54,6 +56,11 @@ addLayer("p", {
         if (!hasMilestone("t", 1)) player.p.auto = false;
         if (!hasMilestone("t", 1)) player.p.auto2 = false;
         if (hasMilestone("t", 0)) keep.push("upgrades")
+      }
+      if (layer=="r"){
+        if (!hasMilestone("r", 1)) player.p.auto = false;
+        if (!hasMilestone("r", 1)) player.p.auto2 = false;
+        if (hasMilestone("r", 0)) keep.push("upgrades")
       }
       layerDataReset("p",keep)
     },
@@ -153,6 +160,36 @@ addLayer("p", {
         cost: new Decimal("1e72600"),
         unlocked(){return hasChallenge("t",12) || hasUpgrade("p",35)},
       },
+      41: {
+        title: "Spirit Power",
+        description: "Harness the power of Ant God--oh wait, wrong game, harness the power of the high gods and make the Shards Spirit more powerful.",
+        cost: new Decimal("1e490000"),
+        unlocked(){return hasChallenge("t",41) || hasUpgrade("p",41)},
+      },
+      42: {
+        title: "Benevolence",
+        description: "Gain 1000x more sacrificial gifts.",
+        cost: new Decimal("1e700000"),
+        unlocked(){return hasChallenge("t",41) || hasUpgrade("p",42)},
+      },
+      43: {
+        title: "Hardcap Repellent II",
+        description: "Remove the hardcap for <b>Reincarnation Bonus</b>, but the formula for that upgrade is (softcapped).",
+        cost: new Decimal("1e1380000"),
+        unlocked(){return hasChallenge("t",41) || hasUpgrade("p",43)},
+      },
+      44: {
+        title: "Supercharged Energy",
+        description: "Make the formula for generating quark energy even better.",
+        cost: new Decimal("1e1435000"),
+        unlocked(){return hasChallenge("t",41) || hasUpgrade("p",44)},
+      },
+      45: {
+        title: "Even More Upgrades",
+        description: "Unlock 5 new ascension upgrades.",
+        cost: new Decimal("1e1620000"),
+        unlocked(){return hasChallenge("t",41) || hasUpgrade("p",45)},
+      },
     },
     buyables: {
     11: {
@@ -225,14 +262,16 @@ addLayer("a", {
         mult = mult.mul(hasUpgrade("a",13)?upgradeEffect("a", 13):1)
         mult = mult.mul(hasUpgrade("a",23)?1000:1)
         mult = mult.mul(hasUpgrade("t",12)?upgradeEffect("t",12):1)
-        mult = mult.mul(hasUpgrade("t",14)?(inChallenge("t",21) || inChallenge("t",41) ? new Decimal(1) : player.t.shards.add(1).pow(new Decimal(0.5).mul(hasUpgrade("t",13)?3:1).mul(hasUpgrade("p",33)?2:1)).mul(hasChallenge("t",21)?1e8:1)):1)
+        mult = mult.mul(hasUpgrade("t",14)?(inChallenge("t",21) || inChallenge("t",41) || inChallenge("t",52) ? new Decimal(1) : player.t.shards.add(1).pow(new Decimal(0.5).mul(hasUpgrade("t",13)?3:1).mul(hasUpgrade("p",33)?2:1)).mul(hasChallenge("t",21)?1e8:1)):1)
         mult = mult.mul(hasUpgrade("t",21)?1e15:1)
         mult = mult.mul(hasChallenge("t",11)?1e50:1)
         mult = mult.mul(hasUpgrade("p",34)?1e100:1)
         mult = mult.mul(buyableEffect("p",13))
         mult = mult.pow(hasUpgrade("a",31)?1.1:1)
-        mult = mult.pow(inChallenge("t",42)?0.05:1)
+        mult = mult.pow(inChallenge("t",42) || inChallenge("t",52)?0.05:1)
         mult = mult.pow(hasUpgrade("t",34)?1.2:1)
+        mult = mult.mul(inChallenge("t",51) || inChallenge("t",52) ? new Decimal(1) : player.r.quarkEnergy.add(1).pow(new Decimal(2.5).add(hasUpgrade("r",14)?player.r.total.log10().div(10):0)))
+        mult = mult.mul(buyableEffect("a",13))
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -243,20 +282,25 @@ addLayer("a", {
         {key: "a", description: "A: Reset for ascension points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
     automate(){
+      if (player.a.points.lte(0)) return
       if (player.a.auto) {
-        addBuyables("a",11,player.a.points.dividedBy(1e300).times(new Decimal(1e20).pow(inChallenge("t",22)?5:1)).dividedBy((new Decimal(1e20).pow(inChallenge("t",22)?5:1)).pow(getBuyableAmount("a",11).plus(1))).plus(1).log(new Decimal(1e20).pow(inChallenge("t",22)?5:1)).floor())
+        addBuyables("a",11,player.a.points.dividedBy(1e300).times(new Decimal(1e20).pow(inChallenge("t",22) || inChallenge("t",52)?5:1)).dividedBy((new Decimal(1e20).pow(inChallenge("t",22) || inChallenge("t",52)?5:1)).pow(getBuyableAmount("a",11).plus(1))).plus(1).log(new Decimal(1e20).pow(inChallenge("t",22) || inChallenge("t",52)?5:1)).floor())
         if(hasChallenge("t",22)){addBuyables("p",13,player.p.points.dividedBy("1e20000").times(1e20).dividedBy(new Decimal(1e20).pow(getBuyableAmount("p",13).plus(1))).plus(1).log(1e20).floor())}
       }
       if (player.a.auto2) {
         addBuyables("a",12,player.a.points.dividedBy("1e60000").times(new Decimal("1e1000")).dividedBy((new Decimal("1e1000")).pow(getBuyableAmount("a",12).plus(1))).plus(1).log(new Decimal("1e1000")).floor())
       }
+      if (player.a.auto3) {
+        addBuyables("a",13,player.a.points.dividedBy("1e800000").times(new Decimal("1e4000")).dividedBy((new Decimal("1e4000")).pow(getBuyableAmount("a",13).plus(1))).plus(1).log(new Decimal("1e4000")).floor())
+      }
+      if (player.t.points.lte(0)) return
       if (player.t.auto) {
         addBuyables("t",11,player.t.points.times(new Decimal(1.5)).dividedBy(new Decimal(2.5).pow(getBuyableAmount("t",11).plus(1))).plus(1).log(2.5).floor());
         addBuyables("t",12,player.t.points.dividedBy(10).times(4).dividedBy(new Decimal(5).pow(getBuyableAmount("t",12).plus(1))).plus(1).log(5).floor());
       }
     },
     branches: ["p"],
-    layerShown(){return player.p.total.gte(1000) || player.a.total.gte(1) || player.t.total.gte(1)},
+    layerShown(){return player.p.total.gte(1000) || player.a.total.gte(1) || player.t.total.gte(1) || player.r.total.gte(1)},
     doReset(layer){
       if (layer=="p")return
         let keep = []
@@ -265,6 +309,13 @@ addLayer("a", {
       if (layer=="t"){
         if (hasMilestone("t", 1)) keep.push("milestones")
         if (hasMilestone("t", 2)) keep.push("upgrades")
+      }
+      if (layer=="r"){
+        if (!hasMilestone("r",2)) player.a.auto = false;
+        if (!hasMilestone("r",2)) player.a.auto2 = false;
+        if (!hasMilestone("r",2)) player.t.auto = false;
+        if (hasMilestone("r",0)) keep.push("upgrades")
+        if (hasMilestone("r",1)) keep.push("milestones")
       }
       layerDataReset("a",keep)
     },
@@ -279,7 +330,7 @@ addLayer("a", {
         description: "Gain more prestige points based on total ascension points.",
         cost: new Decimal(2),
         unlocked(){return hasUpgrade("a",11) || hasUpgrade("a",12) || player.t.total.gte(1)},
-        effect(){return inChallenge("t",11) ? new Decimal(1) : player.a.total.pow(hasUpgrade("a",15)?0.6:0.5).add(1).gte(1e120) ? (hasUpgrade("p",23) ? new Decimal(1e200).pow(hasUpgrade("a",15)?0.6:0.5).add(1).mul(player.a.total.pow(hasUpgrade("t",22)?0.25:0.1).add(1)) : new Decimal(1e120)) : player.a.total.pow(hasUpgrade("a",15)?0.6:0.5).add(1)},
+        effect(){return inChallenge("t",11) || inChallenge("t",52) ? new Decimal(1) : player.a.total.pow(hasUpgrade("a",15)?0.6:0.5).add(1).gte(1e120) ? (hasUpgrade("p",23) ? new Decimal(1e200).pow(hasUpgrade("a",15)?0.6:0.5).add(1).mul(player.a.total.pow(hasUpgrade("t",22)?0.25:0.1).add(1)) : new Decimal(1e120)) : player.a.total.pow(hasUpgrade("a",15)?0.6:0.5).add(1)},
         effectDisplay(){return `x${format(this.effect())}`}
       },
       13: {
@@ -366,11 +417,41 @@ addLayer("a", {
         cost: new Decimal("1e113000"),
         unlocked(){return hasUpgrade("t",31) || hasUpgrade("a",35)},
       },
+      41: {
+        title: "Buyable Unlock V",
+        description: "Unlock a third buyable for Ascension.",
+        cost: new Decimal("1e850000"),
+        unlocked(){return hasUpgrade("p",45) || hasUpgrade("a",41)},
+      },
+      42: {
+        title: "Another Gift Bonus",
+        description: "Gain 1,000,000x more gifts. This should help on the journey to max your spirits.",
+        cost: new Decimal("1e5500000"),
+        unlocked(){return hasUpgrade("p",45) || hasUpgrade("a",42)},
+      },
+      43: {
+        title: "Another Shard Exponent",
+        description: "Shards ^1.25. It's fun when numbers go up.",
+        cost: new Decimal("1e5700000"),
+        unlocked(){return hasUpgrade("p",45) || hasUpgrade("a",43)},
+      },
+      44: {
+        title: "Softcap Extinguisher",
+        description: "Weaken the shards softcap.",
+        cost: new Decimal("1e8010000"),
+        unlocked(){return hasUpgrade("p",45) || hasUpgrade("a",44)},
+      },
+      45: {
+        title: "One Last Gift Multiplier",
+        description: "Gain 1,000,000,000x more gifts again. I promise, this is the last one.",
+        cost: new Decimal("1e9410000"),
+        unlocked(){return hasUpgrade("p",45) || hasUpgrade("a",45)},
+      },
     },
     buyables: {
       11: {
         title: "Point Booster",
-        cost(x) {return new Decimal(1e20).pow(new Decimal(x).mul(inChallenge("t",22)?5:1)).times(1e300)},//x is the amount of buyables you have
+        cost(x) {return new Decimal(1e20).pow(new Decimal(x).mul(inChallenge("t",22) || inChallenge("t",52)?5:1)).times(1e300)},//x is the amount of buyables you have
         canAfford() { return player.a.points.gte(this.cost())},
         buy() {
            player.a.points = player.a.points.sub(this.cost())
@@ -394,6 +475,20 @@ addLayer("a", {
         unlocked(){return hasUpgrade("a",33)},
         effect(x) { 
           mult2 = new Decimal(x).gte(100) ? new Decimal(1e250).pow(100).mul(new Decimal(1e125).pow(new Decimal(x).sub(100))) : new Decimal(1e250).pow(x)
+          return new Decimal(mult2)} //x is the amount of buyables you have
+      },
+      13: {
+        title: "Ascension Point Booster",
+        cost(x) {return new Decimal("1e4000").pow(new Decimal(x)).times("1e800000")},//x is the amount of buyables you have
+        canAfford() { return player.a.points.gte(this.cost())},
+        buy() {
+           player.a.points = player.a.points.sub(this.cost())
+           setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+        },
+        display() {return `Multiply ascension point gain by 1e200 every time you buy this!\nTimes Bought: ${format(getBuyableAmount(this.layer, this.id))}\nCost: ${format(this.cost())}\nEffect: ${format(this.effect())}x ascension point gain`},
+        unlocked(){return hasUpgrade("a",41)},
+        effect(x) { 
+          mult2 = new Decimal(x).gte(1000) ? new Decimal(1e200).pow(100).mul(new Decimal(1e10).pow(new Decimal(x).sub(1000))) : new Decimal(1e200).pow(x)
           return new Decimal(mult2)} //x is the amount of buyables you have
       },
   },
@@ -420,7 +515,7 @@ addLayer("a", {
         requirementDescription: "1e100 ascension points",
         effectDescription: "Automate the 2nd prestige buyable.",
         done() { return player.a.points.gte(1e100) },
-        unlocked() { return hasUpgrade("a",21) || hasMilestone("a",3) || player.t.total.gte(1) },
+        unlocked() { return hasUpgrade("a",21) || hasMilestone("a",3) || player.t.total.gte(1) || player.r.total.gte(1) },
         toggles: [
           ["p","auto2"]
         ]
@@ -436,10 +531,15 @@ addLayer("t", {
 		points: new Decimal(0),
     shards: new Decimal(0),
     }},
+    passiveGeneration(){
+      return hasMilestone("r", 5) ? 1 : 0
+    },
     tabFormat: [
     "main-display",
     "prestige-button",
-    ["display-text", () => `You have ${format(player.t.shards)} shards, multiplying ${hasUpgrade("t",14)?`point, prestige point, and ascension point`:`point and prestige point`} gain by ${format(inChallenge("t",21) || inChallenge("t",41) ? new Decimal(1) : player.t.shards.add(1).pow(new Decimal(0.5).mul(hasUpgrade("t",13)?3:1).mul(hasUpgrade("p",33)?2:1)).mul(hasChallenge("t",21)?1e8:1))}x`],
+    ["display-text", () => `You have ${format(player.a.points)} ascension points`],
+    ["display-text", () => `You have ${format(player.t.shards)} shards, multiplying ${hasUpgrade("t",14)?`point, prestige point, and ascension point`:`point and prestige point`} gain by ${format(inChallenge("t",21) || inChallenge("t",41) || inChallenge("t",52) ? new Decimal(1) : player.t.shards.add(1).pow(new Decimal(0.5).mul(hasUpgrade("t",13)?3:1).mul(hasUpgrade("p",33)?2:1)).mul(hasChallenge("t",21)?1e8:1))}x<br><br>`],
+    "clickables",
     "milestones",
     "buyables",
     "upgrades",
@@ -460,6 +560,9 @@ addLayer("t", {
         mult = mult.mul(hasUpgrade("p",32)?upgradeEffect("p",32):1)
         mult = mult.pow(hasUpgrade("t",25)?1.2:1)
         mult = mult.pow(hasUpgrade("t",34)?1.5:1)
+        mult = mult.mul(hasUpgrade("r",11)?10:1)
+        mult = mult.mul(inChallenge("t",51) || inChallenge("t",52) ? new Decimal(1) : player.r.quarkEnergy.add(1).pow(new Decimal(2.5).add(hasUpgrade("r",14)?player.r.total.log10().div(10):0)))
+        mult = mult.mul(hasUpgrade("r",15)?upgradeEffect("r",15):1)
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -470,7 +573,22 @@ addLayer("t", {
         {key: "t", description: "T: Reset for transcension points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
     branches: ["a"],
-    layerShown(){return player.a.points.gte(1e280) || player.t.total.gte(1)},
+    layerShown(){return player.a.points.gte(1e280) || player.t.total.gte(1) || player.r.total.gte(1)},
+    doReset(layer){
+      if (layer=="p")return
+        let keep = []
+      if (layer=="a")return
+        let keep2 = []
+      if (layer=="t")return
+        let keep3 = []
+      if (layer=="r"){
+        if (!hasMilestone("r",2)) player.t.auto = false;
+        if (hasMilestone("r",2)) keep.push("milestones")
+        if (hasMilestone("r",3)) keep.push("upgrades")
+        if (hasMilestone("r",4)) keep.push("challenges")
+      }
+      layerDataReset("t",keep)
+    },
     upgrades: {
       11: {
         title: "Transcendental Power",
@@ -560,7 +678,7 @@ addLayer("t", {
       },
       35: {
         title: "Paradigm Shift",
-        description: "UNLOCK A NEW PRESTIGE LAYER. (Will be added in v0.4!)",
+        description: "UNLOCK A NEW PRESTIGE LAYER.",
         cost: new Decimal("1e3000"),
         unlocked(){return player.t.shards.gte("1e1000") || hasUpgrade("t",35)},
       },
@@ -576,7 +694,24 @@ addLayer("t", {
         },
         display() {return `Generate shards using this shard generator! Generate more shards with more generator levels.\nLevel: ${format(getBuyableAmount(this.layer, this.id))}\nCost: ${format(this.cost())}\nEffect: +${format(this.effect())} shards/sec`},
         effect(x) { 
-          mult2 = new Decimal(x).mul(buyableEffect("t",12)).mul(hasChallenge("t",21)?1e8:1).mul(hasUpgrade("a",32)?upgradeEffect("a",32):1).mul(new Decimal(100).pow(getBuyableAmount("a",12))).mul(hasChallenge("t",41)?1e20:1).pow(hasUpgrade("t",33)?1.2:1)
+          mult2 = new Decimal(x)
+          mult2 = mult2.mul(buyableEffect("t",12))
+          mult2 = mult2.mul(hasChallenge("t",21)?1e8:1)
+          mult2 = mult2.mul(hasUpgrade("a",32)?upgradeEffect("a",32):1)
+          mult2 = mult2.mul(new Decimal(100).pow(getBuyableAmount("a",12)))
+          mult2 = mult2.mul(hasChallenge("t",41)?1e20:1)
+          mult2 = mult2.pow(hasUpgrade("t",33)?1.2:1)
+          mult2 = mult2.mul(hasUpgrade("r",11)?100000:1)
+          mult2 = mult2.mul(inChallenge("t",51) || inChallenge("t",52) ? new Decimal(1) : player.r.quarkEnergy.add(1).pow(new Decimal(2.5).add(hasUpgrade("r",14)?player.r.total.log10().div(10):0)))
+          mult2 = mult2.mul(hasUpgrade("r",15)?upgradeEffect("r",15):1)
+          mult2 = mult2.mul(hasUpgrade("r",25)?1e50:1)
+          mult2 = mult2.pow(buyableEffect("r",11))
+          mult2 = mult2.pow(new Decimal(1).div(new Decimal(1.5).pow(player.r.charge.mul(10)))) //charge
+          mult2 = mult2.mul(hasUpgrade("r",22)?1e10:1)
+          mult2 = mult2.pow(inChallenge("t",41) || inChallenge("t",52)?0.2:1)
+          mult2 = mult2.pow(hasChallenge("t",52)?1.1:1)
+          mult2 = mult2.pow(hasUpgrade("a",43)?1.25:1)
+          mult2 = player.t.shards.gte("1e7500") ? (hasUpgrade("a",44) ? mult2.pow(0.75).mul("1e5625") : mult2.pow(0.5).mul("1e3750")) : mult2;
           return new Decimal(mult2)}
       },
       12: {
@@ -705,8 +840,291 @@ addLayer("t", {
         canComplete: function() {return player.points.gte("1e360000")},
         unlocked(){return hasUpgrade("t",32)}
     },
+    51: {
+        name: "Power Outage",
+        challengeDescription: "Quark Energy does nothing, and shards ^0.2. (This challenge is super weak)",
+        goalDescription: "Reach 1e765,000 points.",
+        rewardDescription: "Unlock 5 new prestige upgrades, and quark energy ^1.1.",
+        canComplete: function() {return player.points.gte("1e765000")},
+        unlocked(){return hasUpgrade("r",35)}
+    },
+    52: {
+        name: "Sadistic",
+        challengeDescription: "Challenges 1-9 are all applied at once.",
+        goalDescription: "Reach 100,000 points.",
+        rewardDescription: "Shards ^1.1.",
+        canComplete: function() {return player.points.gte("100000")},
+        unlocked(){return hasUpgrade("r",35)}
+    },
   },
     update(diff) {
       player.t.shards = player.t.shards.add(buyableEffect("t", 11).mul(diff))
+    },
+})
+addLayer("r", {
+    name: "reincarnation", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "R", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: true,
+		points: new Decimal(0),
+    quarkEnergy: new Decimal(0),
+    charge: new Decimal(0),
+    gifts: new Decimal(0),
+    }},
+    tabFormat: [
+    "main-display",
+    "prestige-button",
+    ["display-text", () => `You have ${format(player.t.shards)} shards<br><br>`],
+    "milestones",
+    () => hasUpgrade("r",31) ? ["display-text", `You have ${format(player.r.gifts)} sacrificial gifts.<br>When you are in reincarnation charge level 1, you generate sacrificial gifts.<br>These gifts can be spent on spirits, which are buyables that cap at 100 levels.`] : "",
+    "buyables",
+    "upgrades",
+    "challenges",
+    ["bar", "bigBar"],
+    () => hasUpgrade("r",13) ? ["display-text", `<span style="font-size: 20px;">You have ${format(player.r.quarkEnergy)} quark energy, multiplying all previous currencies by ${format(inChallenge("t",51) || inChallenge("t",52) ? new Decimal(1) : player.r.quarkEnergy.pow(new Decimal(1.5).add(hasUpgrade("r",14)?player.r.total.log10().div(10):0).plus(1)))}.</span><br>Your reincarnation charge is making point gain and shard gain ^${format(new Decimal(1).div(new Decimal(1.5).pow(player.r.charge.mul(10))))}.<br>You will generate quark energy based on your reincarnation charge and your shards, but be careful, point gain and shard gain will be reduced from your charge!<br><b>Note: Increasing/decreasing charge WILL cause a reincarnation reset without any bonus. You also need at least 1e50 shards to start generating quark energy.</b>`] : "",
+    "clickables",
+    ],
+    color: "green",
+    requires: new Decimal("1e1000"), // Can be a function that takes requirement increases into account
+    resource: "quarks", // Name of prestige currency
+    baseResource: "shards", // Name of resource prestige is based on
+    baseAmount() {return player.t.shards}, // Get the current amount of baseResource
+    type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    exponent: 0.01, // Prestige currency exponent
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        mult = new Decimal(1)
+        mult = mult.mul(hasUpgrade("r",21)?upgradeEffect("r",21):1)
+        mult = mult.pow(hasUpgrade("r",25)?2:1)
+        if(mult.gte("1e2500")){mult=new Decimal(10).pow(mult.log10().pow(0.5))}
+        return mult
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        return new Decimal(1)
+    },
+    row: 3, // Row the layer is in on the tree (0 is the first row)
+    hotkeys: [
+        {key: "r", description: "R: Reincarnate for quarks", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+    ],
+    branches: ["t"],
+    layerShown(){return hasUpgrade("t",35) || player.r.total.gte(1)},
+    upgrades: {
+      11: {
+        title: "The Next Level",
+        description: "Multiply point gain by 1000x, shard gain by 1e5x, and transcension point gain 10x.",
+        cost: new Decimal(1),
+      },
+      12: {
+        title: "Small Point Exponent",
+        description: "You're starting to regain your memories of your past lives...points are ^1.001 from your new knowledge.",
+        cost: new Decimal(8),
+        unlocked(){return hasMilestone("r",5) || hasUpgrade("r",12)}
+      },
+      13: {
+        title: "A New Mechanic II",
+        description: "Unlock Quark Energy.",
+        cost: new Decimal(10),
+        unlocked(){return hasUpgrade("r",12) || hasUpgrade("r",13)}
+      },
+      14: {
+        title: "Consolidated Energy",
+        description: "Total quarks add to the quark energy multiplier exponent.",
+        cost: new Decimal(10),
+        unlocked(){return hasUpgrade("r",13) || hasUpgrade("r",14)},
+        effect(){return player.r.total.log10().div(10)},
+        effectDisplay(){return `+${format(this.effect())}`}
+      },
+      15: {
+        title: "Reincarnation Bonus",
+        description: "Total quarks boost transcension point gain and shard gain.",
+        cost: new Decimal(15),
+        unlocked(){return hasUpgrade("r",14) || hasUpgrade("r",15)},
+        effect(){return player.r.total.pow(2).gte(1e100) ? (hasUpgrade("p",43) ? (player.r.total.pow(2).gte("1e2000") ? new Decimal("1e2000") : new Decimal(1e100).mul(player.r.total.div(1e50).pow(1.5))) : new Decimal(1e100)) : player.r.total.pow(2)},
+        effectDisplay(){return `x${format(this.effect())}`}
+      },
+      21: {
+        title: "Reincarnated Points",
+        description: "Reusing old ideas repeatedly is fun! Gain more quarks based on points.",
+        cost: new Decimal(15),
+        unlocked(){return hasUpgrade("r",15) || hasUpgrade("r",21)},
+        effect(){return player.points.add(1).log10().add(1).cbrt().div(10)},
+        effectDisplay(){return `x${format(this.effect())}`}
+      },
+      22: {
+        title: "Better Conductors",
+        description: "Gain more quark energy based on total quarks. (hardcaps at 100,000,000x)",
+        cost: new Decimal(200),
+        unlocked(){return hasUpgrade("r",15) || hasUpgrade("r",22)},
+        effect(){return player.r.total.root(hasUpgrade("r",34)?3:5).gte(1e8) ? new Decimal(1e8) : player.r.total.root(hasUpgrade("r",34)?3:5)},
+        effectDisplay(){return `x${format(this.effect())}`}
+      },
+      23: {
+        title: "Cleansing The World",
+        description: "Gain 1e10x more shards, this multiplier is unaffected by reincarnation charge.",
+        cost: new Decimal(250),
+        unlocked(){return hasUpgrade("r",22) || hasUpgrade("r",23)},
+      },
+      24: {
+        title: "Another Quark Energy Boost",
+        description: "Make the formula for generating quark energy better.",
+        cost: new Decimal(400),
+        unlocked(){return hasUpgrade("r",22) || hasUpgrade("r",24)},
+      },
+      25: {
+        title: "Exceptional Exponents",
+        description: "I'm bored, square quark gain and multiply shard gain by 1e50.",
+        cost: new Decimal(500),
+        unlocked(){return hasUpgrade("r",24) || hasUpgrade("r",25)},
+      },
+      31: {
+        title: "A New Mechanic III",
+        description: "Unlock Spirits.",
+        cost: new Decimal(25000),
+        unlocked(){return hasUpgrade("r",25) || hasUpgrade("r",31)},
+      },
+      32: {
+        title: "Gift Sale",
+        description: "Gain 100x more sacrificial gifts.",
+        cost: new Decimal(2000000),
+        unlocked(){return hasUpgrade("r",31) || hasUpgrade("r",32)},
+      },
+      33: {
+        title: "Reincarnated Gifts",
+        description: "Gain more sacrificial gifts based on quark energy.",
+        cost: new Decimal(1e9),
+        unlocked(){return hasUpgrade("r",31) || hasUpgrade("r",33)},
+        effect(){return player.r.quarkEnergy.root(7)},
+        effectDisplay(){return `x${format(this.effect())}`}
+      },
+      34: {
+        title: "Even Better Conductors",
+        description: "<b>Better Conductors</b> uses a better formula.",
+        cost: new Decimal(1.5e10),
+        unlocked(){return hasUpgrade("r",33) || hasUpgrade("r",34)},
+      },
+      35: {
+        title: "Old Mechanic, New Unlock",
+        description: "Unlock 2 new challenges.",
+        cost: new Decimal(5e10),
+        unlocked(){return hasUpgrade("r",33) || hasUpgrade("r",35)},
+      },
+    },
+    buyables: {
+      11: {
+        title: "Shards Spirit",
+        cost(x) {return new Decimal(3).pow(x)},//x is the amount of buyables you have
+        canAfford() { return player.r.gifts.gte(this.cost())},
+        purchaseLimit: 50,
+        buy() {
+           player.r.gifts = player.r.gifts.sub(this.cost())
+           setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+        },
+        display() {return `Exponentiate shards by ^${hasUpgrade("p",41)?1.02:1.01} per level.<br>Level: ${format(getBuyableAmount(this.layer, this.id))}/50<br>Cost: ${format(this.cost())}\nEffect: ^${format(this.effect())} shards`},
+        unlocked(){return hasUpgrade("r",31)},
+        effect(x) { 
+          mult2 = new Decimal(hasUpgrade("p",41)?1.02:1.01).pow(x)
+          return new Decimal(mult2)} //x is the amount of buyables you have
+      },
+      12: {
+        title: "Quarks Spirit",
+        cost(x) {return new Decimal(4).pow(x).mul(10000)},//x is the amount of buyables you have
+        canAfford() { return player.r.gifts.gte(this.cost())},
+        purchaseLimit: 100,
+        buy() {
+           player.r.gifts = player.r.gifts.sub(this.cost())
+           setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+        },
+        display() {return `Double quark gain per level.<br>Level: ${format(getBuyableAmount(this.layer, this.id))}/100<br>Cost: ${format(this.cost())}\nEffect: ${format(this.effect())}x quarks`},
+        unlocked(){return hasUpgrade("r",32)},
+        effect(x) { 
+          mult2 = getBuyableAmount("r",12).gte(15) ? new Decimal(2).pow(15).mul(new Decimal(1.25).pow(new Decimal(x).sub(15))) : new Decimal(2).pow(x)
+          return new Decimal(mult2)} //x is the amount of buyables you have
+      },
+      13: {
+        title: "Energy Spirit",
+        cost(x) {return new Decimal(5).pow(x).mul(100000)},//x is the amount of buyables you have
+        canAfford() { return player.r.gifts.gte(this.cost())},
+        purchaseLimit: 100,
+        buy() {
+           player.r.gifts = player.r.gifts.sub(this.cost())
+           setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+        },
+        display() {return `Triple quark energy gain per level.<br>Level: ${format(getBuyableAmount(this.layer, this.id))}/100<br>Cost: ${format(this.cost())}\nEffect: ${format(this.effect())}x energy`},
+        unlocked(){return hasUpgrade("r",34)},
+        effect(x) { 
+          mult2 = getBuyableAmount("r",13).gte(12) ? new Decimal(3).pow(12).mul(new Decimal(1.5).pow(new Decimal(x).sub(12))) : new Decimal(3).pow(x)
+          return new Decimal(mult2)} //x is the amount of buyables you have
+      },
+  },
+    milestones: {
+    0: {
+        requirementDescription: "2 total quarks",
+        effectDescription: "Keep prestige & ascension upgrades on reset.",
+        done() { return player.r.total.gte(2) }
+    },
+    1: {
+        requirementDescription: "3 total quarks",
+        effectDescription: "Keep ascension milestones on reset.",
+        done() { return player.r.total.gte(3) },
+    },
+    2: {
+        requirementDescription: "4 total quarks",
+        effectDescription: "Keep transcension milestones on reset.",
+        done() { return player.r.total.gte(4) },
+    },
+    3: {
+        requirementDescription: "5 total quarks",
+        effectDescription: "Keep transcension upgrades on reset.",
+        done() { return player.r.total.gte(5) },
+    },
+    4: {
+        requirementDescription: "6 total quarks",
+        effectDescription: "Keep challenge completions on reset.",
+        done() { return player.r.total.gte(6) },
+    },
+    5: {
+        requirementDescription: "8 total quarks",
+        effectDescription: "Gain 100% of transcension point gain per second.",
+        done() { return player.r.total.gte(8) },
+    },
+    6: {
+        requirementDescription: "1e100 quarks",
+        effectDescription: "Automate the 3rd ascension buyable.",
+        done() { return player.r.points.gte(1e100) },
+        unlocked() { return hasUpgrade("a",41) },
+        toggles: [
+          ["a","auto3"]
+        ]
+    },
+  },
+  bars: {
+    bigBar: {
+        direction: 3,
+        width: 500,
+        height: 75,
+        progress() { return player.r.charge },
+        display: "Percentage of reincarnation charge",
+        unlocked() {return hasUpgrade("r",13)},
+        fillStyle() { return {"background-color": "blue"} }
+    },
+  },
+  clickables: {
+    11: {
+        display() {return "Increase reincarnation charge"},
+        onClick() {player.r.charge = player.r.charge.add(0.1); doReset("r", true)},
+        canClick() {return player.r.charge.mul(10).ceil().div(10).lt(1)},
+        unlocked() {return hasUpgrade("r",13)}
+    },
+    12: {
+        display() {return "Decrease reincarnation charge"},
+        onClick() {player.r.charge = player.r.charge.sub(0.1); doReset("r", true)},
+        canClick() {return player.r.charge.mul(10).floor().div(10).gt(0)},
+        unlocked() {return hasUpgrade("r",13)}
+    },
+  },
+  update(diff) {
+      if(player.r.charge.gt(0) && player.t.shards.gte(1e50)) player.r.quarkEnergy = player.r.quarkEnergy.gte("1.797e308") ? player.r.quarkEnergy = new Decimal("1.797e308") : player.r.quarkEnergy.add(new Decimal(hasUpgrade("r",24)?(hasUpgrade("p",44)?1000:8):2.5).pow(player.r.charge.mul(10)).mul(player.t.shards.root(50)).mul(hasUpgrade("r",22)?upgradeEffect("r",22):1).mul(buyableEffect("r",13)).pow(hasChallenge("t",41)?1.1:1).mul(diff))
+    if(player.r.charge.lt(0.1)) player.r.charge = new Decimal(0)
+    if(player.r.charge.eq(0.1) && hasUpgrade("r",31)) player.r.gifts = player.r.gifts.add(player.t.shards.add(1).log10().add(1).mul(diff).mul(hasUpgrade("r",32)?100:1).mul(hasUpgrade("r",33)?upgradeEffect("r",33).mul(hasUpgrade("p",42)?1000:1):1).mul(hasUpgrade("a",42)?1000000:1).mul(hasUpgrade("a",45)?1e9:1))
     },
 })

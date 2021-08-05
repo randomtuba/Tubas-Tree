@@ -13,11 +13,21 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.3",
-	name: "The Bigger & Better Update",
+	num: "0.4",
+	name: "The Reincarnated Update",
 }
 
 let changelog = `<h2>Changelog</h2><br><br>
+<b>v0.4: The Reincarnated Update</b><br>
+-Added a new prestige layer, Reincarnation! 
+-Added 5 new prestige upgrades and 5 new ascension upgrades.<br>
+-Added 15 reincarnation upgrades to buy with quarks! You can also gain up to 7 reincarnation milestones.<br>
+-Added 2 new challenges (Power Outage & Sadistic).<br>
+-Added a 3rd ascension buyable (Ascension Point Booster).<br>
+-Added 2 new rows of achievements!<br>
+-Added Quark Energy! Do harder reincarnations with reincarnation charge to gain quark energy, which boosts all previous currencies!<br>
+-Added Spirits! You can gain sacrificial gifts with reincarnation charge level 1 to buy 3 new buyables!<br>
+-Added some linebreaks in the tab layout for the Transcension tab.<br><br><br>
 <b>v0.3: The Bigger & Better Update</b><br>
 -Added 5 new ascension upgrades and 5 new transcension upgrades.<br>
 -Added 2 new challenges (No Shards II & Anti-Ascension).<br>
@@ -34,7 +44,8 @@ let changelog = `<h2>Changelog</h2><br><br>
 -Added a 3rd prestige buyable (Ascension Point Doubler).<br>
 -Added a new row of achievements.<br>
 -Added a new transcension milestone that requires 1e45 transcension points! It gives automation for the ascension buyable and the 3rd prestige buyable.<br>
--Changed the color of the Goals tab to avoid confusion with the Ascension tab.<br><br><br>
+-Changed the color of the Goals tab to avoid confusion with the Ascension tab.<br>
+-Renamed achievement "The Endgame" to "Point Galaxy".<br><br><br>
 <b>v0.1.1</b><br>
 -Changed the unlock system for upgrades and milestones.<br>
 -Fixed the bug where the 5th transcension milestone was obtained with 8 total transcension points instead of 12 total transcension points.<br><br><br>
@@ -74,13 +85,17 @@ function getPointGen() {
   gain = gain.mul(hasUpgrade("a",11)?10:1)
   gain = gain.mul(hasUpgrade("p",15)?1e10:1)
   gain = gain.mul(hasUpgrade("p",21)?upgradeEffect("p",21):1)
-  gain = gain.mul(inChallenge("t",21) || inChallenge("t",41) ? new Decimal(1) : player.t.shards.add(1).pow(new Decimal(0.5).mul(hasUpgrade("t",13)?3:1).mul(hasUpgrade("p",33)?2:1)).mul(hasChallenge("t",21)?1e8:1))
+  gain = gain.mul(inChallenge("t",21) || inChallenge("t",41) || inChallenge("t",52) ? new Decimal(1) : player.t.shards.add(1).pow(new Decimal(0.5).mul(hasUpgrade("t",13)?3:1).mul(hasUpgrade("p",33)?2:1)).mul(hasChallenge("t",21)?1e8:1))
   gain = gain.mul(buyableEffect("a", 11))
-  gain = gain.pow(inChallenge("t",12)?0.75:1)
+  gain = gain.pow(inChallenge("t",12) || inChallenge("t",52)?0.75:1)
   gain = gain.pow(hasChallenge("t",12)?1.05:1)
-  gain = gain.pow(inChallenge("t",32)?0.01:1)
+  gain = gain.pow(inChallenge("t",32) || inChallenge("t",52)?0.01:1)
   gain = gain.mul(buyableEffect("a", 12))
-  gain = gain.pow(inChallenge("t",41)?0.1:1)
+  gain = gain.pow(inChallenge("t",41) || inChallenge("t",52)?0.1:1)
+  gain = gain.mul(hasUpgrade("r",11)?1000:1)
+  gain = gain.pow(hasUpgrade("r",12)?1.001:1)
+  gain = gain.mul(inChallenge("t",51) || inChallenge("t",52) ? new Decimal(1) : player.r.quarkEnergy.add(1).pow(new Decimal(2.5).add(hasUpgrade("r",14)?player.r.total.log10().div(10):0)))
+  gain = gain.pow(new Decimal(1).div(new Decimal(1.5).pow(player.r.charge.mul(10))))
 	return gain
 }
 
@@ -94,7 +109,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte(new Decimal("1e610000"))
+	return player.points.gte(new Decimal("1e22895400"))
 }
 
 

@@ -139,7 +139,57 @@ tabFormat: [
     55: {
         name: "Anti-Challenged",
       done(){return hasChallenge("t",42)},
-      tooltip:"Complete all 8 challenges."
+      tooltip:"Complete 8 challenges."
+    },
+    61: {
+        name: "Born Again",
+      done(){return player.r.points.gte(1)},
+      tooltip:"Reincarnate."
+    },
+    62: {
+        name: "It's 2008 Once More",
+      done(){return player.points.gte(1e200) && inChallenge("t",32)},
+      tooltip:"Reach 1e200 points in Financial Recession."
+    },
+    63: {
+        name: "Gotta Catch 'Em All",
+      done(){return hasMilestone("r",5)},
+      tooltip:"Obtain 6 Reincarnation Milestones."
+    },
+    64: {
+        name: "Energized!",
+      done(){return player.r.quarkEnergy.gte(1)},
+      tooltip:"Begin to generate quark energy."
+    },
+    65: {
+        name: "Inflation III when?",
+      done(){return hasUpgrade("r",25)},
+      tooltip:"Buy <b>Exceptional Exponents</b>."
+    },
+    71: {
+        name: "Into The Heavens",
+      done(){return hasUpgrade("r",31)},
+      tooltip:"Unlock Spirits."
+    },
+    72: {
+        name: "It's a Tuba's Tree Christmas",
+      done(){return player.r.gifts.gte(1e6)},
+      tooltip:"Reach 1,000,000 sacrificial gifts."
+    },
+    73: {
+        name: "Biggest Numbers Yet",
+      done(){return player.points.gte("1e1000000")},
+      tooltip:"Reach e1,000,000 points."
+    },
+    74: {
+        name: "To The Dark Side",
+      done(){return player.r.charge.gte(0.99) && player.t.shards.gte("1e50")},
+      tooltip:"Reach 1e50 shards with 100% reincarnation charge."
+    },
+    75: {
+        name: "<span style='font-size: 15px; color: red;'>End of the World</span>",
+      done(){return hasChallenge("t",52)},
+      tooltip:"Complete Sadistic."
     },
 },
 })
