@@ -42,7 +42,7 @@ addLayer("p", {
         hasMilestone("t",4) ? addBuyables("p",11,player.p.points.dividedBy(10).times(9).dividedBy(getBuyableAmount("p",11).plus(1).pow10()).plus(1).log(100).floor()) : buyBuyable("p",11)
       }
       if (player.p.auto2) {
-        hasMilestone("t",4) ? setBuyableAmount("p", 12, player.p.points.dividedBy(1e10).log(100).floor()) : buyBuyable("p",12)
+        hasMilestone("t",4) ? addBuyables("p", 12, player.p.points.dividedBy(1e10).times(99).dividedBy(new Decimal(100).pow(getBuyableAmount("p",12).plus(1))).plus(1).log(100).floor()) : buyBuyable("p",12)
       }
     },
     layerShown(){return true},
@@ -164,31 +164,31 @@ addLayer("p", {
         title: "Spirit Power",
         description: "Harness the power of Ant God--oh wait, wrong game, harness the power of the high gods and make the Shards Spirit more powerful.",
         cost: new Decimal("1e490000"),
-        unlocked(){return hasChallenge("t",41) || hasUpgrade("p",41)},
+        unlocked(){return hasChallenge("t",51) || hasUpgrade("p",41)},
       },
       42: {
         title: "Benevolence",
         description: "Gain 1000x more sacrificial gifts.",
         cost: new Decimal("1e700000"),
-        unlocked(){return hasChallenge("t",41) || hasUpgrade("p",42)},
+        unlocked(){return hasChallenge("t",51) || hasUpgrade("p",42)},
       },
       43: {
         title: "Hardcap Repellent II",
         description: "Remove the hardcap for <b>Reincarnation Bonus</b>, but the formula for that upgrade is (softcapped).",
         cost: new Decimal("1e1380000"),
-        unlocked(){return hasChallenge("t",41) || hasUpgrade("p",43)},
+        unlocked(){return hasChallenge("t",51) || hasUpgrade("p",43)},
       },
       44: {
         title: "Supercharged Energy",
         description: "Make the formula for generating quark energy even better.",
         cost: new Decimal("1e1435000"),
-        unlocked(){return hasChallenge("t",41) || hasUpgrade("p",44)},
+        unlocked(){return hasChallenge("t",51) || hasUpgrade("p",44)},
       },
       45: {
         title: "Even More Upgrades",
         description: "Unlock 5 new ascension upgrades.",
         cost: new Decimal("1e1620000"),
-        unlocked(){return hasChallenge("t",41) || hasUpgrade("p",45)},
+        unlocked(){return hasChallenge("t",51) || hasUpgrade("p",45)},
       },
     },
     buyables: {
@@ -279,7 +279,7 @@ addLayer("a", {
     },
     row: 1, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
-        {key: "a", description: "A: Reset for ascension points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+        {key: "a", description: "A: Reset for ascension points", unlocked(){return player.p.total.gte(1000) || player.a.total.gte(1) || player.t.total.gte(1) || player.r.total.gte(1)}, onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
     automate(){
       if (player.a.points.lte(0)) return
@@ -570,7 +570,7 @@ addLayer("t", {
     },
     row: 2, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
-        {key: "t", description: "T: Reset for transcension points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+        {key: "t", description: "T: Reset for transcension points", unlocked(){return player.a.points.gte(1e280) || player.t.total.gte(1) || player.r.total.gte(1)}, onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
     branches: ["a"],
     layerShown(){return player.a.points.gte(1e280) || player.t.total.gte(1) || player.r.total.gte(1)},
@@ -904,7 +904,7 @@ addLayer("r", {
     },
     row: 3, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
-        {key: "r", description: "R: Reincarnate for quarks", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+        {key: "r", description: "R: Reincarnate for quarks", unlocked(){return hasUpgrade("t",35) || player.r.total.gte(1)}, onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
     branches: ["t"],
     layerShown(){return hasUpgrade("t",35) || player.r.total.gte(1)},
@@ -1111,13 +1111,13 @@ addLayer("r", {
   clickables: {
     11: {
         display() {return "Increase reincarnation charge"},
-        onClick() {player.r.charge = player.r.charge.add(0.1); doReset("r", true)},
+        onClick() {player.r.charge = player.r.charge.add(0.1); player.r.charge = player.r.charge.mul(10).ceil().div(10); doReset("r", true)},
         canClick() {return player.r.charge.mul(10).ceil().div(10).lt(1)},
         unlocked() {return hasUpgrade("r",13)}
     },
     12: {
         display() {return "Decrease reincarnation charge"},
-        onClick() {player.r.charge = player.r.charge.sub(0.1); doReset("r", true)},
+        onClick() {player.r.charge = player.r.charge.sub(0.1); player.r.charge = player.r.charge.mul(10).floor().div(10); doReset("r", true)},
         canClick() {return player.r.charge.mul(10).floor().div(10).gt(0)},
         unlocked() {return hasUpgrade("r",13)}
     },

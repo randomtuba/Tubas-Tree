@@ -187,7 +187,7 @@ tabFormat: [
       tooltip:"Reach 1e50 shards with 100% reincarnation charge."
     },
     75: {
-        name: "<span style='font-size: 15px; color: red;'>End of the World</span>",
+        name: "<span style='font-size: 12px; color: red;'><b>End of the World</b></span>",
       done(){return hasChallenge("t",52)},
       tooltip:"Complete Sadistic."
     },

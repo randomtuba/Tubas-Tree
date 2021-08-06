@@ -13,11 +13,16 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.4",
+	num: "0.4.1",
 	name: "The Reincarnated Update",
 }
 
 let changelog = `<h2>Changelog</h2><br><br>
+<b>v0.4.1</b><br>
+-Fixed the unlock requirement for the 4th row of prestige upgrades.<br> 
+-Fixed a bug with not gaining sacrificial gifts with 10% reincarnation charge from a rounding error.<br>
+-Made hotkey text in the Info tab unlock based on the layers you have unlocked.<br>
+-Fixed a bug with the 2nd prestige buyable not being able to be manually bought when its automation is enabled with Transcension Milestone 5 obtained.<br><br><br>
 <b>v0.4: The Reincarnated Update</b><br>
 -Added a new prestige layer, Reincarnation! 
 -Added 5 new prestige upgrades and 5 new ascension upgrades.<br>
