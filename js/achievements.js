@@ -12,6 +12,7 @@ addLayer("g", {
     type: "none", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     row: "side", // Row the layer is in on the tree (0 is the first row)
 tabFormat: [
+    ["display-text", () => `You have ${player.g.achievements.length}/35 goals (${format(new Decimal(player.g.achievements.length).div(35).mul(100))}%)<br>`],
     "achievements"
 ],
     layerShown(){return true},

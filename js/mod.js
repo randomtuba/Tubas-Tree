@@ -13,11 +13,13 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.4.1",
+	num: "0.4.2",
 	name: "The Reincarnated Update",
 }
 
 let changelog = `<h2>Changelog</h2><br><br>
+<b>v0.4.2</b><br>
+-Made a display for how many achievements you have in the Goals tab<br><br><br>
 <b>v0.4.1</b><br>
 -Fixed the unlock requirement for the 4th row of prestige upgrades.<br> 
 -Fixed a bug with not gaining sacrificial gifts with 10% reincarnation charge from a rounding error.<br>
