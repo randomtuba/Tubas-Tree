@@ -28,6 +28,8 @@ function getResetGain(layer, useType = null) {
 		if (gain.gte(tmp[layer].softcap)) gain = gain.pow(tmp[layer].softcapPower).times(tmp[layer].softcap.pow(decimalOne.sub(tmp[layer].softcapPower)))
 		gain = gain.times(tmp[layer].directMult)
     if(gain.gte("1e2500")&&layer=="r"){gain=gain.pow(0.5).mul("1e1250")}
+    if(gain.gte("1e7500000")&&layer=="r"){gain=gain.pow(0.5).mul("1e3750000")}
+    if(gain.gte("1e20000000")&&layer=="r"){gain=gain.pow(0.5).mul("1e10000000")}
 		return gain.floor().max(0);
 	} else if (type=="custom"){
 		return layers[layer].getResetGain()

@@ -249,3 +249,20 @@ button > * {
 	--background: transparent !important;
 }
 
+#news {
+  color: #FFFFFF;
+  position: relative;
+  display: inline-block;
+  font-size: 15px;
+  white-space: nowrap;
+  font-weight: bold
+}
+
+#game {
+  border: 2px solid white;
+  padding: 2px;
+  width: 75%;
+  overflow: hidden;
+  margin: auto;
+  text-align: left;
+}

@@ -13,18 +13,26 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.4.2",
-	name: "The Reincarnated Update",
+	num: "0.5",
+	name: "The Inflation Update",
 }
 
 let changelog = `<h2>Changelog</h2><br><br>
+<b>v0.5: The Inflation Update</b><br>
+-Added a new mechanic, Reincarnation Challenges! There are now 5 new challenges that can be completed up to 10 times for some INSANELY powerful rewards!<br>
+-Added 5 new transcension upgrades and 5 new reincarnation upgrades.<br>
+-Added a new reincarnation milestone that requires 1e180,000 quarks! It lets you passively generate quarks.<br>
+-Added a 4th spirit, the Points Spirit!<br>
+-Added 2 new rows of achievements!<br>
+-Added text that displays the current endgame.<br><br><br>
 <b>v0.4.2</b><br>
 -Made a display for how many achievements you have in the Goals tab<br><br><br>
 <b>v0.4.1</b><br>
 -Fixed the unlock requirement for the 4th row of prestige upgrades.<br> 
 -Fixed a bug with not gaining sacrificial gifts with 10% reincarnation charge from a rounding error.<br>
 -Made hotkey text in the Info tab unlock based on the layers you have unlocked.<br>
--Fixed a bug with the 2nd prestige buyable not being able to be manually bought when its automation is enabled with Transcension Milestone 5 obtained.<br><br><br>
+-Fixed a bug with the 2nd prestige buyable not being able to be manually bought when its automation is enabled with Transcension Milestone 5 obtained.<br>
+-Made the text for "End of the World" bold.<br><br><br>
 <b>v0.4: The Reincarnated Update</b><br>
 -Added a new prestige layer, Reincarnation! 
 -Added 5 new prestige upgrades and 5 new ascension upgrades.<br>
@@ -103,6 +111,11 @@ function getPointGen() {
   gain = gain.pow(hasUpgrade("r",12)?1.001:1)
   gain = gain.mul(inChallenge("t",51) || inChallenge("t",52) ? new Decimal(1) : player.r.quarkEnergy.add(1).pow(new Decimal(2.5).add(hasUpgrade("r",14)?player.r.total.log10().div(10):0)))
   gain = gain.pow(new Decimal(1).div(new Decimal(1.5).pow(player.r.charge.mul(10))))
+  gain = gain.mul(inChallenge("r",11) || inChallenge("r",31)?0:1)
+  gain = gain.pow(1+(challengeCompletions("r",11)/10))
+  gain = gain.pow(inChallenge("r",12)?2:1)
+  gain = gain.pow(buyableEffect("r", 21))
+  gain = gain.pow(hasUpgrade("t",43)?1.001:1)
 	return gain
 }
 
@@ -111,12 +124,15 @@ function addedPlayerData() { return {
 }}
 
 // Display extra things at the top of the page
-var displayThings = [
+var displayThings = ["Current Endgame: e1.200e13 points"
+  // function() {return `<br><div id="game">
+   // <div id="news" style="transform: translateX(-2512px); transition: transform 35.33s linear 0s;">testing 123</div>
+   // </div>`}
 ]
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte(new Decimal("1e22895400"))
+	return player.points.gte(new Decimal("1e1.2e13"))
 }
 
 

@@ -12,7 +12,7 @@ addLayer("g", {
     type: "none", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     row: "side", // Row the layer is in on the tree (0 is the first row)
 tabFormat: [
-    ["display-text", () => `You have ${player.g.achievements.length}/35 goals (${format(new Decimal(player.g.achievements.length).div(35).mul(100))}%)<br>`],
+    ["display-text", () => `You have ${player.g.achievements.length}/45 goals (${format(new Decimal(player.g.achievements.length).div(45).mul(100))}%)<br>`],
     "achievements"
 ],
     layerShown(){return true},
@@ -191,6 +191,56 @@ tabFormat: [
         name: "<span style='font-size: 12px; color: red;'><b>End of the World</b></span>",
       done(){return hasChallenge("t",52)},
       tooltip:"Complete Sadistic."
+    },
+    81: {
+        name: "Engineer <i>Hypergaming</i>",
+      done(){return hasUpgrade("a",45)},
+      tooltip:"Buy 20 ascension upgrades in total."
+    },
+    82: {
+        name: "Overgifted",
+      done(){return player.r.gifts.gte(1e70)},
+      tooltip:"Reach 1e70 sacrificial gifts."
+    },
+    83: {
+        name: "[insert arbitrary large number here]",
+      done(){return player.points.gte("1e22895400")},
+      tooltip:"Reach e22,895,400 points."
+    },
+    84: {
+        name: "Reincarnated Suffering",
+      done(){return hasChallenge("r",11)},
+      tooltip:"Complete a Reincarnation Challenge."
+    },
+    85: {
+        name: "Wait there's another one?",
+      done(){return hasChallenge("r",21)},
+      tooltip:"Unlock the 4th spirit."
+    },
+    91: {
+        name: "You Can Stop Now",
+      done(){return player.points.gte("1e100000000")},
+      tooltip:"Reach e100,000,000 points."
+    },
+    92: {
+        name: "String Theory",
+      done(){return player.r.points.gte("1e10000")},
+      tooltip:"Reach 1e10,000 quarks."
+    },
+    93: {
+        name: "Is this inflation?",
+      done(){return player.points.gte("1e1e10")},
+      tooltip:"Reach e1.000e10 points."
+    },
+    94: {
+        name: "...",
+      done(){return hasUpgrade("r",45)},
+      tooltip:"Buy Inflation III."
+    },
+    95: {
+        name: "Anti-antichallenged",
+      done(){return challengeCompletions("r",31) >= 10},
+      tooltip:"Fully complete ALL challenges."
     },
 },
 })
