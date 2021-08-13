@@ -30,6 +30,7 @@ function getResetGain(layer, useType = null) {
     if(gain.gte("1e2500")&&layer=="r"){gain=gain.pow(0.5).mul("1e1250")}
     if(gain.gte("1e7500000")&&layer=="r"){gain=gain.pow(0.5).mul("1e3750000")}
     if(gain.gte("1e20000000")&&layer=="r"){gain=gain.pow(0.5).mul("1e10000000")}
+    if(gain.gte("1e1e13")&&layer=="p"){gain=gain.pow(hasUpgrade("sp",13)?(hasUpgrade("sp",23)?0.7:0.65):0.6).mul("1e6e12")}
 		return gain.floor().max(0);
 	} else if (type=="custom"){
 		return layers[layer].getResetGain()

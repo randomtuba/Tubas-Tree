@@ -29,6 +29,9 @@ addLayer("p", {
         mult = mult.mul(inChallenge("t",51) || inChallenge("t",52) ? new Decimal(1) : player.r.quarkEnergy.add(1).pow(new Decimal(2.5).add(hasUpgrade("r",14)?player.r.total.log10().div(10):0)))
         mult = mult.mul(inChallenge("r",12)?0:1)
         mult = mult.pow(hasUpgrade("t",45)?1.01:1)
+        mult = mult.mul(buyableEffect("sp",11))
+        mult = mult.mul(hasUpgrade("sp",14)?upgradeEffect("sp",14):1)
+        mult = mult.pow(hasUpgrade("sp",22)?2:1)
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -63,6 +66,9 @@ addLayer("p", {
         if (!hasMilestone("r", 1)) player.p.auto = false;
         if (!hasMilestone("r", 1)) player.p.auto2 = false;
         if (hasMilestone("r", 0)) keep.push("upgrades")
+      }
+      if (layer=="sp"){
+        if (hasMilestone("sp", 0)) keep.push("upgrades")
       }
       layerDataReset("p",keep)
     },
@@ -103,7 +109,7 @@ addLayer("p", {
         description: "Gain more points based on points.",
         cost: new Decimal(1e275),
         unlocked(){return hasUpgrade("a",22) || hasUpgrade("p",21)},
-        effect(){return hasUpgrade("p",35) ? player.points.pow(hasUpgrade("a",35)?0.06:0.055).add(1) : player.points.pow(0.05).add(1)},
+        effect(){return hasUpgrade("p",35) ? player.points.pow(hasUpgrade("a",35)?(hasUpgrade("sp",21)?0.08:0.06):0.055).add(1) : player.points.pow(0.05).add(1)},
         effectDisplay(){return `x${format(this.effect())}`}
       },
       22: {
@@ -569,6 +575,7 @@ addLayer("t", {
         mult = mult.mul(inChallenge("r",12)?0:1)
         mult = mult.pow(1+(challengeCompletions("r",12)/5))
         mult = mult.pow(hasUpgrade("t",44)?1.5:1)
+        mult = mult.mul(hasUpgrade("sp",24)?"1e1000000000000":1)
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -1092,6 +1099,12 @@ addLayer("r", {
         cost: new Decimal("1e8660000"),
         unlocked(){return challengeCompletions("r",22) >= 5 || hasUpgrade("r",45)},
       },
+      51: {
+        title: "All You Are Going To Do Is Get Back There",
+        description: "Get back there.",
+        cost: new Decimal("1e22000000"),
+        unlocked(){return player.r.total.gte("1e22000000") || hasUpgrade("r",51)},
+      },
     },
     buyables: {
       11: {
@@ -1356,4 +1369,119 @@ addLayer("r", {
     if(player.r.charge.lt(0.1)) player.r.charge = new Decimal(0)
     if(player.r.charge.eq(0.1) && hasUpgrade("r",31)) player.r.gifts = player.r.gifts.add(player.t.shards.add(1).log10().add(1).mul(diff).mul(hasUpgrade("r",32)?100:1).mul(hasUpgrade("r",33)?upgradeEffect("r",33).mul(hasUpgrade("p",42)?1000:1):1).mul(hasUpgrade("a",42)?1000000:1).mul(hasUpgrade("a",45)?1e9:1).mul(hasUpgrade("r",43)?upgradeEffect("r",43):1).pow(hasUpgrade("t",41)?1.1:1))
     },
+})
+addLayer("sp", {
+    name: "super-prestige", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "SP", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: true,
+		points: new Decimal(0),
+    }},
+    color: "#0086C4",
+    requires: new Decimal("1e3e12"), // Can be a function that takes requirement increases into account
+    resource: "super-prestige points", // Name of prestige currency
+    baseResource: "prestige points", // Name of resource prestige is based on
+    baseAmount() {return player.p.points}, // Get the current amount of baseResource
+    type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    exponent: 0.000000000001, // Prestige currency exponent
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        mult = new Decimal(1)
+        return mult
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        return new Decimal(1)
+    },
+    row: 0, // Row the layer is in on the tree (0 is the first row)
+    hotkeys: [
+        {key: "s", description: "S: Reset for super-prestige points", unlocked(){return hasUpgrade("r",51)}, onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+    ],
+    layerShown(){return hasUpgrade("r",51)},
+  branches: ["p"],
+    upgrades: {
+      11: {
+        title: "Point Multiplier II",
+        description: "Multiply point gain by e1.000e11.",
+        cost: new Decimal(1),
+      },
+      12: {
+        title: "Buyable Unlock VI",
+        description: "Unlock a buyable.",
+        cost: new Decimal(10000000),
+        unlocked(){return hasUpgrade("sp",11) || hasUpgrade("sp",12)}
+      },
+      13: {
+        title: "Prestige Enhancement II",
+        description: "Weaken the prestige point softcap.",
+        cost: new Decimal(5e12),
+        unlocked(){return hasUpgrade("sp",11) || hasUpgrade("sp",13)}
+      },
+      14: {
+        title: "Super-Prestige Bonus",
+        description: "Gain more prestige points based on total super-prestige points.",
+        cost: new Decimal(5e14),
+        unlocked(){return hasUpgrade("sp",13) || hasUpgrade("sp",14)},
+        effect(){return player.sp.total.pow(5e10).gte("1e1e13") ? new Decimal("1e1e13") : player.sp.total.pow(5e10)},
+        effectDisplay(){return `x${format(this.effect())}`}
+      },
+      15: {
+        title: "Short & Simple II",
+        description: "Multiply point gain by e5.000e12. These upgrades seem familiar...",
+        cost: new Decimal(2e16),
+        unlocked(){return hasUpgrade("sp",14) || hasUpgrade("sp",15)}
+      },
+      21: {
+        title: "This isn't Inflation IV, but it's a good upgrade",
+        description: "<b>Self-Synergy</b> uses an even better formula.",
+        cost: new Decimal(1.5e19),
+        unlocked(){return hasUpgrade("sp",14) || hasUpgrade("sp",21)},
+      },
+      22: {
+        title: "Prestige Exponential II",
+        description: "Square prestige point gain (keep in mind there's a softcap!).",
+        cost: new Decimal(1e22),
+        unlocked(){return hasUpgrade("sp",14) || hasUpgrade("sp",22)},
+      },
+      23: {
+        title: "Softcap Repellent",
+        description: "Weaken the prestige point softcap more.",
+        cost: new Decimal(3e30),
+        unlocked(){return hasUpgrade("sp",14) || hasUpgrade("sp",23)},
+      },
+      24: {
+        title: "Transcendental Tripler?",
+        description: "Gain e1.000e9x more transcension points.",
+        cost: new Decimal(2.5e44),
+        unlocked(){return hasUpgrade("sp",23) || hasUpgrade("sp",24)},
+      },
+      25: {
+        title: "The Last Upgrade",
+        description: "Points ^1.01.",
+        cost: new Decimal(1e51),
+        unlocked(){return hasUpgrade("sp",24) || hasUpgrade("sp",25)},
+      },
+    },
+  buyables: {
+      11: {
+        title: "Prestige Point Hyperbooster",
+        cost(x) {return new Decimal(100).pow(x).mul(1e10)},//x is the amount of buyables you have
+        canAfford() { return player.sp.points.gte(this.cost())},
+        buy() {
+           player.sp.points = player.sp.points.sub(this.cost())
+           setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+        },
+        display() {return `Multiply prestige point gain by e1.000e11 every time you buy this!<br>Level: ${format(getBuyableAmount(this.layer, this.id))}<br>Cost: ${format(this.cost())}\nEffect: ${format(this.effect())}x prestige points`},
+        unlocked(){return hasUpgrade("sp",12)},
+        effect(x) { 
+          mult2 = new Decimal("1e1e11").pow(x)
+          return new Decimal(mult2)} //x is the amount of buyables you have
+      },
+  },
+  milestones: {
+    0: {
+        requirementDescription: "1e15 super-prestige points",
+        effectDescription: "Keep prestige upgrades on reset.",
+        done() { return player.sp.points.gte(1e15) }
+    },
+  },
 })

@@ -13,11 +13,13 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.5",
-	name: "The Inflation Update",
+	num: "1.0",
+	name: "Release",
 }
 
 let changelog = `<h2>Changelog</h2><br><br>
+<b>v1.0: Release</b><br>
+-What is there to say?<br><br><br>
 <b>v0.5: The Inflation Update</b><br>
 -Added a new mechanic, Reincarnation Challenges! There are now 5 new challenges that can be completed up to 10 times for some INSANELY powerful rewards!<br>
 -Added 5 new transcension upgrades and 5 new reincarnation upgrades.<br>
@@ -73,7 +75,7 @@ let changelog = `<h2>Changelog</h2><br><br>
 -Added 15 achievements (although the achievements tab is called the Goals tab to not be confused with the Ascension tab).<br>
 -Added Shards! Shards generate over time and boost your other currencies.<br><br><br>`
 
-let winText = `Listen here you little shit, you weren't supposed to get here. You cheated and beat the game, but for now...`
+let winText = `Congratulations on completing Tuba's Tree! There is no more content, but there might be QoL updates in the future.`
 
 // If you add new functions anywhere inside of a layer, and those functions have an effect when called, add them here.
 // (The ones here are examples, all official functions are already taken care of)
@@ -116,6 +118,9 @@ function getPointGen() {
   gain = gain.pow(inChallenge("r",12)?2:1)
   gain = gain.pow(buyableEffect("r", 21))
   gain = gain.pow(hasUpgrade("t",43)?1.001:1)
+  gain = gain.mul(hasUpgrade("sp",11)?"1e1e11":1)
+  gain = gain.mul(hasUpgrade("sp",15)?"1e5e12":1)
+  gain = gain.pow(hasUpgrade("sp",25)?1.01:1)
 	return gain
 }
 
@@ -124,7 +129,7 @@ function addedPlayerData() { return {
 }}
 
 // Display extra things at the top of the page
-var displayThings = ["Current Endgame: e1.200e13 points"
+var displayThings = ["Reach e2.360e14 points to beat the game!"
   // function() {return `<br><div id="game">
    // <div id="news" style="transform: translateX(-2512px); transition: transform 35.33s linear 0s;">testing 123</div>
    // </div>`}
@@ -132,7 +137,7 @@ var displayThings = ["Current Endgame: e1.200e13 points"
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte(new Decimal("1e1.2e13"))
+	return player.points.gte(new Decimal("1e2.36e14"))
 }
 
 

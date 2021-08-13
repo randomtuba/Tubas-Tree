@@ -242,5 +242,35 @@ tabFormat: [
       done(){return challengeCompletions("r",31) >= 10},
       tooltip:"Fully complete ALL challenges."
     },
+    101: {
+        name: "Prestigious?",
+      done(){return player.sp.points.gte(1)},
+      tooltip:"Super-Prestige.",
+      unlocked(){return player.sp.total.gte(1)}
+    },
+    102: {
+        name: "Nice^Nice^<br>Nice^69420",
+      done(){return player.points.gte("4.3323022673587985e12957320060829")},
+      tooltip:"Reach 4.332e12,957,320,060,829 points.",
+      unlocked(){return player.sp.total.gte(1)}
+    },
+    103: {
+        name: "Ooh, buyable! Again!",
+      done(){return hasUpgrade("sp",12)},
+      tooltip:"Unlock the 13th buyable.",
+      unlocked(){return player.sp.total.gte(1)}
+    },
+    104: {
+        name: "Actually Super-Prestigious",
+      done(){return hasUpgrade("sp",23)},
+      tooltip:"Buy 8 super-prestige upgrades.",
+      unlocked(){return player.sp.total.gte(1)}
+    },
+    105: {
+        name: "The End",
+      done(){return player.points.gte(Infinity)},
+      tooltip:"Beat the game.",
+      unlocked(){return player.points.gte("1e2.36e14")}
+    },
 },
 })
