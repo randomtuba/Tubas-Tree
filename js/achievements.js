@@ -268,9 +268,9 @@ tabFormat: [
     },
     105: {
         name: "The End",
-      done(){return player.points.gte(Infinity)},
+      done(){return player.points.gte("1e2.36e14")},
       tooltip:"Beat the game.",
-      unlocked(){return player.points.gte("1e2.36e14")}
+      unlocked(){return player.sp.total.gte(1)}
     },
 },
 })

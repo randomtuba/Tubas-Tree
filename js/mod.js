@@ -13,11 +13,19 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "1.0",
+	num: "1.0.1",
 	name: "Release",
 }
 
 let changelog = `<h2>Changelog</h2><br><br>
+<b>v1.0.1</b><br>
+-Reduced Reincarnation Milestone 8's requirement (1e180,000 -> 1e8000)<br>
+-Adjusted the unlock for Challenge 10 (Sadistic)<br>
+-Fixed autobuyers for prestige buyables and ascension buyables<br>
+-Fixed the requirement for "The End"<br>
+-Renamed "All You Are Going To Do Is Get Back There" to "All You Are Going To Want To Do Is Get Back There"<br>
+-Add infoboxes in tabs<br>
+-The first 3 rows of prestige upgrades, ascension upgrades, and transcension upgrades are now kept shown on reincarnation<br><br><br>
 <b>v1.0: Release</b><br>
 -What is there to say?<br><br><br>
 <b>v0.5: The Inflation Update</b><br>
