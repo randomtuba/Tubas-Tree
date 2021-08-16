@@ -560,7 +560,7 @@ addLayer("t", {
     "main-display",
     "prestige-button",
     ["display-text", () => `You have ${format(player.a.points)} ascension points`],
-    ["display-text", () => `You have ${format(player.t.shards)} shards, multiplying ${hasUpgrade("t",14)?`point, prestige point, and ascension point`:`point and prestige point`} gain by ${format(inChallenge("t",21) || inChallenge("t",41) || inChallenge("t",52) ? new Decimal(1) : player.t.shards.add(1).pow(new Decimal(0.5).mul(hasUpgrade("t",13)?3:1).mul(hasUpgrade("p",33)?2:1)).mul(hasChallenge("t",21)?1e8:1))}x<br><br>`],
+    ["display-text", () => `You have <h2 style="color: #9803FC; text-shadow: 0px 0px 10px #9803FC">${format(player.t.shards)}</h2> shards, multiplying ${hasUpgrade("t",14)?`point, prestige point, and ascension point`:`point and prestige point`} gain by ${format(inChallenge("t",21) || inChallenge("t",41) || inChallenge("t",52) ? new Decimal(1) : player.t.shards.add(1).pow(new Decimal(0.5).mul(hasUpgrade("t",13)?3:1).mul(hasUpgrade("p",33)?2:1)).mul(hasChallenge("t",21)?1e8:1))}x<br><br>`],
     "clickables",
     "milestones",
     "buyables",
@@ -614,6 +614,8 @@ addLayer("t", {
         if (hasMilestone("r",3)) keep.push("upgrades")
         if (hasMilestone("r",4)) keep.push("challenges")
       }
+      if (layer=="sp")return
+        let keep4 = []
       layerDataReset("t",keep)
     },
     upgrades: {
@@ -957,7 +959,7 @@ addLayer("r", {
     "buyables",
     "upgrades",
     ["bar", "bigBar"],
-    () => hasUpgrade("r",13) ? ["display-text", `<span style="font-size: 20px;">You have ${format(player.r.quarkEnergy)} quark energy, multiplying all previous currencies by ${format(inChallenge("t",51) || inChallenge("t",52) ? new Decimal(1) : player.r.quarkEnergy.pow(new Decimal(1.5).add(hasUpgrade("r",14)?player.r.total.log10().div(10):0).plus(1)))}.</span><br>Your reincarnation charge is making point gain and shard gain ^${format(new Decimal(1).div(new Decimal(1.5).pow(player.r.charge.mul(10))))}.<br>You will generate quark energy based on your reincarnation charge and your shards, but be careful, point gain and shard gain will be reduced from your charge!<br><b>Note: Increasing/decreasing charge WILL cause a reincarnation reset without any bonus. You also need at least 1e50 shards to start generating quark energy.</b>`] : "",
+    () => hasUpgrade("r",13) ? ["display-text", `<span style="font-size: 20px;">You have </span><h2 style="color: #0000FF; text-shadow: 0px 0px 10px #0000FF";>${format(player.r.quarkEnergy)}</h2><span style="font-size: 20px;"> quark energy, multiplying all previous currencies by ${format(inChallenge("t",51) || inChallenge("t",52) ? new Decimal(1) : player.r.quarkEnergy.pow(new Decimal(1.5).add(hasUpgrade("r",14)?player.r.total.log10().div(10):0).plus(1)))}.</span><br><span style="color: red;">Your reincarnation charge is making point gain and shard gain ^${format(new Decimal(1).div(new Decimal(1.5).pow(player.r.charge.mul(10))))}.</span><br>You will generate quark energy based on your reincarnation charge and your shards, but be careful, point gain and shard gain will be reduced from your charge!<br><b>Note: Increasing/decreasing charge WILL cause a reincarnation reset without any bonus. You also need at least 1e50 shards to start generating quark energy.</b>`] : "",
     "clickables",
     ["display-text", () => `<br><br>`],
     () => hasUpgrade("r",41) ? ["infobox","lore2"] : "",

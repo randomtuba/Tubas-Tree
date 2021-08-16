@@ -13,11 +13,14 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "1.0.1",
+	num: "1.0.2",
 	name: "Release",
 }
 
 let changelog = `<h2>Changelog</h2><br><br>
+<b>v1.0.2</b><br>
+-Made the amount of shards and amount of quark energy display differently<br>
+-Colored the text for displaying the reincarnation charge nerf red<br><br><br>
 <b>v1.0.1</b><br>
 -Reduced Reincarnation Milestone 8's requirement (1e180,000 -> 1e8000)<br>
 -Adjusted the unlock for Challenge 10 (Sadistic)<br>
